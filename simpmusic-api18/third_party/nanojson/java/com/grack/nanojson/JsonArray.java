@@ -18,13 +18,26 @@ package com.grack.nanojson;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Extends an {@link ArrayList} with helper methods to determine the underlying JSON type of the list element.
  */
 public class JsonArray extends ArrayList<Object> {
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Declares stream() on JsonArray itself so API 18 can resolve the desugared
+	 * j$.util.stream.Stream call sites emitted in NewPipeExtractor.
+	 */
+	@Override
+	public Stream<Object> stream() {
+		return StreamSupport.stream(
+				Spliterators.spliterator(iterator(), size(), Spliterator.ORDERED), false);
+	}
 
 	/**
 	 * Creates an empty {@link JsonArray} with the default capacity.
