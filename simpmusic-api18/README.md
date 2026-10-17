@@ -1,8 +1,10 @@
 # SimpMusic Legacy (Android 4.3+)
 
-This is a separate, reduced edition for older Android devices. It browses audio already stored on the device and provides song search, play/pause, previous/next, seeking, audio-focus handling, and background playback with notification controls.
+This API 18 edition now includes online YouTube search, playback, and saving audio for offline listening, alongside music already stored on the device. Search results are fetched on demand; selecting a result resolves its audio stream and starts the existing background player. **Save** stores the extracted audio in `Music/SimpMusic` and adds it to Android's media scanner.
 
-It does not include YouTube Music streaming, account sign-in, synced lyrics, downloads, recommendations, equalizer, Cast, or the modern Compose interface. Those parts of the current app depend on Android API 26+, Java 21, and current AndroidX/Media3 libraries; this edition uses the Android framework APIs available on API 18 instead.
+This is a reduced compatibility client based on REA inspection of SimpMusic v2.3.0 and its shared YouTube Music/extractor flow. It is not the full modern SimpMusic feature set: account sync, recommendations, lyrics, playlists/queue management, casts, equalizer, modern Compose UI, etc. are not ported yet. YouTube's undocumented endpoints and stream formats can change, and playback/download availability depends on region, age restrictions, and YouTube service changes. On Android 4.3, the OS's TLS certificates/codecs can also limit connections or supported formats.
+
+The network extractor is NewPipe Extractor v0.26.1, GPL-3.0-or-later, with its corresponding source under `third_party/NewPipeExtractor`. NewPipe's nanojson fork is included under `third_party/nanojson` (Apache-2.0). Remaining runtime libraries are resolved from Maven Central in `app/build.gradle`.
 
 ## Build
 
@@ -12,4 +14,4 @@ Install JDK 17 or newer and Android SDK Platform 35 / Build Tools 35.0.0, set `A
 ./gradlew assembleDebug
 ```
 
-The APK is written to `app/build/outputs/apk/debug/app-debug.apk`. Its package is `com.maxrave.simpmusic.legacy`, separate from the modern SimpMusic app.
+The APK is written to `app/build/outputs/apk/debug/app-debug.apk` and checked into this folder as [`SimpMusic-API18-debug.apk`](SimpMusic-API18-debug.apk). Its package is `com.maxrave.simpmusic.legacy`, separate from the modern app. The app targets API 28 so storage downloads use the public Music directory on API 18 devices. This build has been compiled and its manifest checked, but it has not been exercised on a physical Android 4.3 device.

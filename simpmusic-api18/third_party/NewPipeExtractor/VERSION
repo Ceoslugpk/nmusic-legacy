@@ -1,0 +1,4 @@
+NewPipe Extractor v0.26.1
+Source commit: 18757880f64620568381bab1bf87104ede940d1c
+Upstream: https://github.com/TeamNewPipe/NewPipeExtractor
+The binary in app/libs was built from this source with the upstream nanojson dependency embedded.

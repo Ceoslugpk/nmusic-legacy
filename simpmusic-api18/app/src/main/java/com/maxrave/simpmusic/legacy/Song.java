@@ -8,14 +8,31 @@ final class Song {
     final String title;
     final String artist;
     final Uri uri;
+    final String youtubeUrl;
+    final boolean online;
 
     Song(long id, String title, String artist) {
         this.id = id;
-        this.title = title == null || title.length() == 0 ? "Unknown title" : title;
-        this.artist = artist == null || artist.length() == 0 ? "Unknown artist" : artist;
+        this.title = clean(title, "Unknown title");
+        this.artist = clean(artist, "Unknown artist");
         this.uri = Uri.withAppendedPath(
                 android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 Long.toString(id));
+        this.youtubeUrl = null;
+        this.online = false;
+    }
+
+    Song(String youtubeUrl, String title, String artist) {
+        this.id = youtubeUrl == null ? 0 : youtubeUrl.hashCode();
+        this.title = clean(title, "Unknown title");
+        this.artist = clean(artist, "Unknown artist");
+        this.uri = null;
+        this.youtubeUrl = youtubeUrl;
+        this.online = true;
+    }
+
+    private static String clean(String value, String fallback) {
+        return value == null || value.length() == 0 ? fallback : value;
     }
 
     boolean matches(String query) {

@@ -2,9 +2,9 @@
 
 ## Result
 
-The 38 KB `SimpMusic-API18-debug.apk` in this repository is a standalone local-file player. It is not a downleveled build of the full SimpMusic application. REA analysis of the published SimpMusic 2.3.0 FOSS APK confirms that Android 4.3 support requires a separate compatibility implementation: the shipped app declares API 26 as its minimum, its entry activity hosts Compose UI, and playback is built around a Media3 library session. The SimpMusic source tree also marks the app and shared Android modules as API 26 minimum.
+The first 38 KB `SimpMusic-API18-debug.apk` was only a local-file player. The updated 4.4 MB API 18 build now adds YouTube search, AAC/M4A stream playback, and downloads to `Music/SimpMusic`, while keeping a separate legacy UI and MediaPlayer service. It is still a reduced compatibility edition, not the full modern SimpMusic application: the current app requires API 26, Compose, and Media3.
 
-This report is static analysis of one APK plus comparison with the checked-out source. It does not claim runtime behavior was observed on a device.
+REA findings below are static analysis of one APK plus comparison with the checked-out source. The new API 18 APK was compiled and its package/minimum SDK/permissions were checked from its manifest. It has not been run on a physical API 18 device; the environment also blocks direct requests to YouTube, so live search and extraction could not be smoke-tested here.
 
 ## Artifact and analysis tools
 
@@ -29,13 +29,8 @@ This report is static analysis of one APK plus comparison with the checked-out s
 
 ## Porting implications
 
-Keep Android 4.3 support as a separate app target. Do not describe the current 38 KB local player APK as the full SimpMusic app. A credible reduced streaming edition needs at least a compatible UI, source/extractor path, playback engine, queue/state handling, and background-media controls. The current Compose UI and Media3 service cannot simply be switched on for API 18; build a legacy UI and service layer, then reuse only shared Kotlin/domain/network code that passes an API 18 and dependency compatibility audit.
+The API 18 edition now uses a legacy View UI and Android framework `MediaPlayer` service, while NewPipe Extractor supplies YouTube search and signature-decoded audio stream URLs. The download action resolves an AAC/M4A stream and writes it to public Music storage. This follows the same broad search-to-stream-to-download flow traced in SimpMusic, with API 18-compatible components.
 
-A useful implementation order is:
+The source trace found a YouTube Music search request in `Ytmusic.kt`, stream URL selection in `StreamRepositoryImpl`, and Media3-managed downloads in `DownloadUtils.kt`. APK class-name searches for those repositories returned no matches, consistent with R8 obfuscation; REA could inspect the activity and playback service, but did not recover those implementation classes from the APK.
 
-1. Identify the SimpMusic repository revision and the exact streaming path used by the FOSS build (search result to extractor result to playable stream URI).
-2. Port that one path into the API 18 app while keeping the legacy `MediaPlayer` service, queue, and notification behavior explicit.
-3. Add search/source selection and error handling, then validate against a real Android 4.3 device or emulator.
-4. Expand to library, lyrics, downloads, and account-dependent features only after their dependencies and service APIs are separately shown to work on API 18.
-
-This is a substantially reduced compatibility edition, not a promise that every current SimpMusic feature will run on API 18.
+Current API 18 scope is local library search/playback plus YouTube video/song search, background playback controls, and audio file downloads. Playlist/account synchronization, lyrics, recommendations, equalizer, Cast, the modern Compose interface, and complete feature parity remain unported. The next meaningful validation is an install and end-to-end search/play/download test on a real API 18 device; that hardware check is still outstanding.

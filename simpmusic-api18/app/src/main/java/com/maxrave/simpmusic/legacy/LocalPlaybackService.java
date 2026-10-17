@@ -92,7 +92,12 @@ public final class LocalPlaybackService extends Service implements AudioManager.
             player = new MediaPlayer();
             player.setAudioStreamType(AudioManager.STREAM_MUSIC);
             player.setWakeMode(getApplicationContext(), android.os.PowerManager.PARTIAL_WAKE_LOCK);
-            player.setDataSource(this, Uri.parse(currentUri));
+            Uri source = Uri.parse(currentUri);
+            if ("http".equalsIgnoreCase(source.getScheme()) || "https".equalsIgnoreCase(source.getScheme())) {
+                player.setDataSource(currentUri);
+            } else {
+                player.setDataSource(this, source);
+            }
             player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override public void onPrepared(MediaPlayer mediaPlayer) {
                     if (mediaPlayer != player) return;
