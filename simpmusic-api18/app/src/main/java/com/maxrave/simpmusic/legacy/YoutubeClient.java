@@ -211,16 +211,25 @@ final class YoutubeClient {
         return error == null || error.getMessage() == null ? "unknown error" : error.getMessage();
     }
 
+    private static String message(LinkageError error) {
+        if (error == null) return "unknown error";
+        return error.getMessage() == null ? error.getClass().getSimpleName() : error.getMessage();
+    }
+
     static String resolveAudioUrl(String youtubeUrl) throws Exception {
-        initialize();
-        StreamInfo info = StreamInfo.getInfo(ServiceList.YouTube, youtubeUrl);
-        List<AudioStream> streams = info.getAudioStreams();
-        if (streams == null || streams.isEmpty()) throw new IOException("No playable audio stream was found.");
-        // Android 4.3 MediaPlayer supports AAC/M4A; newer Opus/WebM streams do not work there.
-        for (AudioStream stream : streams) {
-            if (stream.getFormat() == MediaFormat.M4A) return stream.getContent();
+        try {
+            initialize();
+            StreamInfo info = StreamInfo.getInfo(ServiceList.YouTube, youtubeUrl);
+            List<AudioStream> streams = info.getAudioStreams();
+            if (streams == null || streams.isEmpty()) throw new IOException("No playable audio stream was found.");
+            // Android 4.3 MediaPlayer supports AAC/M4A; newer Opus/WebM streams do not work there.
+            for (AudioStream stream : streams) {
+                if (stream.getFormat() == MediaFormat.M4A) return stream.getContent();
+            }
+            throw new IOException("This video has no AAC/M4A stream supported by Android 4.3.");
+        } catch (LinkageError error) {
+            throw new IOException("The stream extractor is incompatible with this Android runtime: " + message(error), error);
         }
-        throw new IOException("This video has no AAC/M4A stream supported by Android 4.3.");
     }
 
     static void downloadAudio(String youtubeUrl, File destination) throws Exception {

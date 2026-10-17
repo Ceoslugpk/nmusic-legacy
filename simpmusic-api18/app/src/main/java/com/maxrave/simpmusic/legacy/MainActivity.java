@@ -345,23 +345,48 @@ public final class MainActivity extends Activity {
         if (Build.VERSION.SDK_INT >= 23 && !hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             pendingDownload = song; requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_DOWNLOAD_PERMISSION); return;
         }
-        final File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "SimpMusic");
-        if (!directory.exists() && !directory.mkdirs()) { message.setText("Could not create the Music/SimpMusic folder."); return; }
-        String safeName = (song.title + " - " + song.artist).replaceAll("[\\\\/:*?\"<>|]", "_").trim();
-        if (safeName.length() > 120) safeName = safeName.substring(0, 120);
-        final File destination = new File(directory, safeName + ".m4a");
+        final File destination;
+        try {
+            File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "SimpMusic");
+            if (!directory.exists() && !directory.mkdirs()) { message.setText("Could not create the Music/SimpMusic folder."); return; }
+            if (!directory.isDirectory()) { message.setText("Music/SimpMusic is not a folder on this device."); return; }
+            String safeName = (song.title + " - " + song.artist).replaceAll("[\\\\/:*?\"<>|]", "_").trim();
+            if (safeName.length() > 120) safeName = safeName.substring(0, 120);
+            if (safeName.length() == 0) safeName = "YouTube audio";
+            destination = new File(directory, safeName + ".m4a");
+        } catch (RuntimeException error) {
+            message.setText("Could not access Music storage: " + safeMessage(error));
+            return;
+        }
         message.setText("Downloading “" + song.title + "”…");
         new AsyncTask<Void, Void, Boolean>() {
-            private Exception failure;
+            private Throwable failure;
             @Override protected Boolean doInBackground(Void... ignored) {
                 File partial = new File(destination.getAbsolutePath() + ".part");
-                try { YoutubeClient.downloadAudio(song.youtubeUrl, partial); if (!partial.renameTo(destination)) throw new java.io.IOException("Could not finish saving the file."); return true; }
-                catch (Exception error) { failure = error; partial.delete(); return false; }
+                try {
+                    YoutubeClient.downloadAudio(song.youtubeUrl, partial);
+                    if (!partial.isFile() || partial.length() == 0) throw new java.io.IOException("YouTube returned an empty audio file.");
+                    if (destination.exists() && !destination.delete()) throw new java.io.IOException("Could not replace the existing download.");
+                    if (!partial.renameTo(destination)) throw new java.io.IOException("Could not finish saving the file.");
+                    return true;
+                } catch (Exception error) {
+                    failure = error;
+                    partial.delete();
+                    return false;
+                } catch (LinkageError error) {
+                    failure = error;
+                    partial.delete();
+                    return false;
+                }
             }
             @Override protected void onPostExecute(Boolean okay) {
                 if (okay) {
-                    android.media.MediaScannerConnection.scanFile(MainActivity.this, new String[] { destination.getAbsolutePath() }, null, null);
-                    message.setText("Saved to Music/SimpMusic/" + destination.getName());
+                    try {
+                        android.media.MediaScannerConnection.scanFile(MainActivity.this, new String[] { destination.getAbsolutePath() }, null, null);
+                        message.setText("Saved to Music/SimpMusic/" + destination.getName());
+                    } catch (RuntimeException error) {
+                        message.setText("Saved the file, but Android could not refresh its music library.");
+                    }
                 } else message.setText("Download failed: " + safeMessage(failure));
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -406,7 +431,10 @@ public final class MainActivity extends Activity {
     }
     private int dp(int value) { return (int) (value * getResources().getDisplayMetrics().density + 0.5f); }
     private static String safeArtist(String artist) { return artist == null || artist.length() == 0 ? "Unknown artist" : artist; }
-    private static String safeMessage(Exception error) { return error == null || error.getMessage() == null ? "unknown error" : error.getMessage(); }
+    private static String safeMessage(Throwable error) {
+        if (error == null) return "unknown error";
+        return error.getMessage() == null ? error.getClass().getSimpleName() : error.getMessage();
+    }
     private static String formatTime(long millis) { long seconds = Math.max(0, millis / 1000); return String.format(Locale.US, "%02d:%02d", seconds / 60, seconds % 60); }
 
     private final class SongAdapter extends BaseAdapter {
