@@ -2,6 +2,7 @@ package com.maxrave.simpmusic.legacy;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,10 +30,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public final class MainActivity extends Activity {
     private static final int REQUEST_AUDIO_PERMISSION = 18;
@@ -45,6 +49,7 @@ public final class MainActivity extends Activity {
     private TextView nowArtist;
     private TextView time;
     private TextView message;
+    private String lastDiagnostic;
     private SeekBar seekBar;
     private Button playButton;
     private Button youtubeTab;
@@ -165,6 +170,9 @@ public final class MainActivity extends Activity {
         message = new TextView(this); message.setText("Search YouTube Music or browse songs on this device.");
         message.setTextColor(Color.rgb(151, 169, 160)); message.setTextSize(12);
         message.setGravity(Gravity.CENTER_VERTICAL); message.setPadding(dp(4), 0, dp(4), 0);
+        message.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) { showDiagnostic(); }
+        });
         root.addView(message, new LinearLayout.LayoutParams(-1, dp(34)));
 
         ListView list = new ListView(this); adapter = new SongAdapter(); list.setAdapter(adapter); list.setDividerHeight(dp(7));
@@ -387,7 +395,10 @@ public final class MainActivity extends Activity {
                     } catch (RuntimeException error) {
                         message.setText("Saved the file, but Android could not refresh its music library.");
                     }
-                } else message.setText("Download failed: " + safeMessage(failure));
+                } else {
+                    lastDiagnostic = fullDiagnostic(failure);
+                    message.setText("Download failed (tap for details): " + safeMessage(failure));
+                }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -434,6 +445,24 @@ public final class MainActivity extends Activity {
     private static String safeMessage(Throwable error) {
         if (error == null) return "unknown error";
         return error.getMessage() == null ? error.getClass().getSimpleName() : error.getMessage();
+    }
+    private static String fullDiagnostic(Throwable error) {
+        if (error == null) return "No error details were captured.";
+        StringWriter output = new StringWriter();
+        error.printStackTrace(new PrintWriter(output));
+        return output.toString();
+    }
+    private void showDiagnostic() {
+        if (lastDiagnostic == null) return;
+        TextView details = new TextView(this);
+        details.setText(lastDiagnostic);
+        details.setTextIsSelectable(true);
+        details.setTextSize(12);
+        details.setPadding(dp(16), dp(12), dp(16), dp(12));
+        ScrollView scroll = new ScrollView(this);
+        scroll.addView(details);
+        new AlertDialog.Builder(this).setTitle("Download error details")
+                .setView(scroll).setPositiveButton("CLOSE", null).show();
     }
     private static String formatTime(long millis) { long seconds = Math.max(0, millis / 1000); return String.format(Locale.US, "%02d:%02d", seconds / 60, seconds % 60); }
 

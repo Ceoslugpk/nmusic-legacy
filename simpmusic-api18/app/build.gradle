@@ -12,8 +12,8 @@ android {
         applicationId 'com.maxrave.simpmusic.legacy'
         minSdk 18
         targetSdk 28
-        versionCode 6
-        versionName '0.6.0-api18-extractor-compat'
+        versionCode 7
+        versionName '0.7.0-api18-extractor-compat'
         multiDexEnabled true
     }
 

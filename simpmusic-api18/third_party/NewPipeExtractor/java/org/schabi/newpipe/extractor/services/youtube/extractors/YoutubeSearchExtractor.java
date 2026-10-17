@@ -130,7 +130,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                     "correctedQueryEndpoint.searchEndpoint.query");
         }
 
-        return Objects.requireNonNullElse(
+        return org.schabi.newpipe.extractor.LegacyCollections.requireNonNullElse(
                 getTextFromObject(itemSectionRenderer.getArray("contents")
                         .getObject(0)
                         .getObject("showingResultsForRenderer")

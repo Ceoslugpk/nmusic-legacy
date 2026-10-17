@@ -160,7 +160,7 @@ public final class YoutubeJavaScriptPlayerManager {
 
         try {
             // Return an empty parameter in the case the function returns null
-            return Objects.requireNonNullElse(
+            return org.schabi.newpipe.extractor.LegacyCollections.requireNonNullElse(
                     JavaScript.run(cachedSignatureDeobfuscationFunction,
                             YoutubeSignatureUtils.DEOBFUSCATION_FUNCTION_NAME,
                             obfuscatedSignature), "");

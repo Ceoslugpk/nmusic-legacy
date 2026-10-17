@@ -53,4 +53,11 @@ public final class LegacyCollections {
         }
         return true;
     }
+
+    /** java.util.Objects.requireNonNullElse was added after Android API 18. */
+    public static <T> T requireNonNullElse(T value, T fallback) {
+        if (value != null) return value;
+        if (fallback == null) throw new NullPointerException("defaultObj");
+        return fallback;
+    }
 }

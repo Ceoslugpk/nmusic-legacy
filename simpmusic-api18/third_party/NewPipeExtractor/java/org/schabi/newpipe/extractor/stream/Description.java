@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.stream;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -17,7 +16,7 @@ public class Description implements Serializable {
 
     public Description(@Nullable final String content, final int type) {
         this.type = type;
-        this.content = Objects.requireNonNullElse(content, "");
+        this.content = org.schabi.newpipe.extractor.LegacyCollections.requireNonNullElse(content, "");
     }
 
     public String getContent() {
@@ -37,11 +36,11 @@ public class Description implements Serializable {
             return false;
         }
         final Description that = (Description) o;
-        return type == that.type && Objects.equals(content, that.content);
+        return type == that.type && content.equals(that.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(content, type);
+        return 31 * content.hashCode() + type;
     }
 }
