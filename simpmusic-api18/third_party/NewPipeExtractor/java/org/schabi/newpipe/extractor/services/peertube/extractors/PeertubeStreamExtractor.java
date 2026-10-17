@@ -361,7 +361,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
                     framesets.add(new Frameset(
                             // there is only one composite image per video containing all frames
-                            List.of(baseUrl + url),
+                            org.schabi.newpipe.extractor.LegacyCollections.listOf(baseUrl + url),
                             width, height, count,
                             durationPerFrame, framesPerPageX, framesPerPageY));
                 }

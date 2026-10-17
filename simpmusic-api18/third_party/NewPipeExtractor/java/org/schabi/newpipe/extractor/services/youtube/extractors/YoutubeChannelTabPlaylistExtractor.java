@@ -149,7 +149,7 @@ public class YoutubeChannelTabPlaylistExtractor extends ChannelTabExtractor {
         try {
             final String newUrl = YoutubePlaylistLinkHandlerFactory.getInstance()
                     .getUrl(playlistId);
-            return new ListLinkHandler(newUrl, newUrl, playlistId, List.of(), "");
+            return new ListLinkHandler(newUrl, newUrl, playlistId, org.schabi.newpipe.extractor.LegacyCollections.listOf(), "");
         } catch (final ParsingException e) {
             // This should be not reachable, as the given playlist ID should be valid and
             // YoutubePlaylistLinkHandlerFactory doesn't throw any exception

@@ -181,13 +181,13 @@ public final class PlaylistInfo extends ListInfo<StreamInfoItem> {
     private String subChannelName;
     private Description description;
     @Nonnull
-    private List<Image> banners = List.of();
+    private List<Image> banners = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     @Nonnull
-    private List<Image> subChannelAvatars = List.of();
+    private List<Image> subChannelAvatars = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     @Nonnull
-    private List<Image> thumbnails = List.of();
+    private List<Image> thumbnails = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     @Nonnull
-    private List<Image> uploaderAvatars = List.of();
+    private List<Image> uploaderAvatars = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     private long streamCount;
     private PlaylistType playlistType;
 

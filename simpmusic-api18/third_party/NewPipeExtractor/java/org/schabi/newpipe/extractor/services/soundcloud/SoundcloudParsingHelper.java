@@ -66,7 +66,7 @@ public final class SoundcloudParsingHelper {
     version of the original image.
     */
     private static final List<ImageSuffix> ALBUMS_AND_ARTWORKS_IMAGE_SUFFIXES =
-            List.of(new ImageSuffix("mini", 16, 16, LOW),
+            org.schabi.newpipe.extractor.LegacyCollections.listOf(new ImageSuffix("mini", 16, 16, LOW),
                     new ImageSuffix("t20x20", 20, 20, LOW),
                     new ImageSuffix("small", 32, 32, LOW),
                     new ImageSuffix("badge", 47, 47, LOW),
@@ -85,7 +85,7 @@ public final class SoundcloudParsingHelper {
                     new ImageSuffix("t500x500", 500, 500, MEDIUM));
 
     private static final List<ImageSuffix> VISUALS_IMAGE_SUFFIXES =
-            List.of(new ImageSuffix("t1240x260", 1240, 260, MEDIUM),
+            org.schabi.newpipe.extractor.LegacyCollections.listOf(new ImageSuffix("t1240x260", 1240, 260, MEDIUM),
                     new ImageSuffix("t2480x520", 2480, 520, MEDIUM));
 
     private static String clientId;
@@ -115,7 +115,7 @@ public final class SoundcloudParsingHelper {
         // The one containing the client id will likely be the last one
         Collections.reverse(possibleScripts);
 
-        final var headers = Map.of("Range", List.of("bytes=0-50000"));
+        final var headers = org.schabi.newpipe.extractor.LegacyCollections.mapOf("Range", org.schabi.newpipe.extractor.LegacyCollections.listOf("bytes=0-50000"));
 
         for (final Element element : possibleScripts) {
             final String srcUrl = element.attr("src");
@@ -460,7 +460,7 @@ public final class SoundcloudParsingHelper {
     public static List<Image> getAllImagesFromArtworkOrAvatarUrl(
             @Nullable final String originalArtworkOrAvatarUrl) {
         if (isNullOrEmpty(originalArtworkOrAvatarUrl)) {
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         }
 
         return getAllImagesFromImageUrlReturned(
@@ -474,7 +474,7 @@ public final class SoundcloudParsingHelper {
     public static List<Image> getAllImagesFromVisualUrl(
             @Nullable final String originalVisualUrl) {
         if (isNullOrEmpty(originalVisualUrl)) {
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         }
 
         return getAllImagesFromImageUrlReturned(

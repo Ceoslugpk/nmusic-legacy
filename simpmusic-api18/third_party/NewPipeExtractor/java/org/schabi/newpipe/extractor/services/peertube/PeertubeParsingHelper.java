@@ -264,11 +264,11 @@ public final class PeertubeParsingHelper {
         final JsonObject image = ownerAccountOrVideoChannelObject.getObject(jsonObjectName);
         final String path = image.getString("path");
         if (!isNullOrEmpty(path)) {
-            return List.of(new Image(baseUrl + path, HEIGHT_UNKNOWN,
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf(new Image(baseUrl + path, HEIGHT_UNKNOWN,
                     image.getInt("width", WIDTH_UNKNOWN), ResolutionLevel.UNKNOWN));
         }
 
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     /**

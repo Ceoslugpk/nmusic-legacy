@@ -85,10 +85,10 @@ public final class MediaCCCParsingHelper {
     @Nonnull
     public static List<Image> getImageListFromLogoImageUrl(@Nullable final String logoImageUrl) {
         if (isNullOrEmpty(logoImageUrl)) {
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         }
 
-        return List.of(new Image(logoImageUrl, HEIGHT_UNKNOWN, WIDTH_UNKNOWN,
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf(new Image(logoImageUrl, HEIGHT_UNKNOWN, WIDTH_UNKNOWN,
                 ResolutionLevel.UNKNOWN));
     }
 

@@ -180,8 +180,8 @@ public final class YoutubeParsingHelper {
     private static final Pattern C_ANDROID_PATTERN = Pattern.compile("&c=ANDROID");
     private static final Pattern C_IOS_PATTERN = Pattern.compile("&c=IOS");
 
-    private static final Set<String> GOOGLE_URLS = Set.of("google.", "m.google.", "www.google.");
-    private static final Set<String> INVIDIOUS_URLS = Set.of("invidio.us", "dev.invidio.us",
+    private static final Set<String> GOOGLE_URLS = org.schabi.newpipe.extractor.LegacyCollections.setOf("google.", "m.google.", "www.google.");
+    private static final Set<String> INVIDIOUS_URLS = org.schabi.newpipe.extractor.LegacyCollections.setOf("invidio.us", "dev.invidio.us",
             "www.invidio.us", "redirect.invidious.io", "invidious.snopyta.org", "yewtu.be",
             "tube.connect.cafe", "tubus.eduvid.org", "invidious.kavin.rocks", "invidious.site",
             "invidious-us.kavin.rocks", "piped.kavin.rocks", "vid.mint.lgbt", "invidiou.site",
@@ -189,7 +189,7 @@ public final class YoutubeParsingHelper {
             "ytprivate.com", "invidious.namazso.eu", "invidious.silkky.cloud", "ytb.trom.tf",
             "invidious.exonip.de", "inv.riverside.rocks", "invidious.blamefran.net", "y.com.cm",
             "invidious.moomoo.me", "yt.cyberhost.uk");
-    private static final Set<String> YOUTUBE_URLS = Set.of("youtube.com", "www.youtube.com",
+    private static final Set<String> YOUTUBE_URLS = org.schabi.newpipe.extractor.LegacyCollections.setOf("youtube.com", "www.youtube.com",
             "m.youtube.com", "music.youtube.com");
 
     private static boolean consentAccepted = false;
@@ -1132,7 +1132,7 @@ public final class YoutubeParsingHelper {
     public static Map<String, List<String>> getYouTubeHeaders()
             throws ExtractionException, IOException {
         final var headers = getClientInfoHeaders();
-        headers.put("Cookie", List.of(generateConsentCookie()));
+        headers.put("Cookie", org.schabi.newpipe.extractor.LegacyCollections.listOf(generateConsentCookie()));
         return headers;
     }
 
@@ -1154,8 +1154,8 @@ public final class YoutubeParsingHelper {
      * @param url The URL to be set as the origin and referrer.
      */
     public static Map<String, List<String>> getOriginReferrerHeaders(@Nonnull final String url) {
-        final var urlList = List.of(url);
-        return Map.of("Origin", urlList, "Referer", urlList);
+        final var urlList = org.schabi.newpipe.extractor.LegacyCollections.listOf(url);
+        return org.schabi.newpipe.extractor.LegacyCollections.mapOf("Origin", urlList, "Referer", urlList);
     }
 
     /**
@@ -1167,8 +1167,8 @@ public final class YoutubeParsingHelper {
      */
     public static Map<String, List<String>> getClientHeaders(@Nonnull final String name,
                                                              @Nonnull final String version) {
-        return Map.of("X-YouTube-Client-Name", List.of(name),
-                "X-YouTube-Client-Version", List.of(version));
+        return org.schabi.newpipe.extractor.LegacyCollections.mapOf("X-YouTube-Client-Name", org.schabi.newpipe.extractor.LegacyCollections.listOf(name),
+                "X-YouTube-Client-Version", org.schabi.newpipe.extractor.LegacyCollections.listOf(version));
     }
 
     /**
@@ -1176,7 +1176,7 @@ public final class YoutubeParsingHelper {
      * @return A singleton map containing the header.
      */
     public static Map<String, List<String>> getCookieHeader() {
-        return Map.of("Cookie", List.of(generateConsentCookie()));
+        return org.schabi.newpipe.extractor.LegacyCollections.mapOf("Cookie", org.schabi.newpipe.extractor.LegacyCollections.listOf(generateConsentCookie()));
     }
 
     @Nonnull

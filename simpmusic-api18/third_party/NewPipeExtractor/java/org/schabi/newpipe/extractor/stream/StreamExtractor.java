@@ -220,7 +220,7 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public List<Image> getUploaderAvatars() throws ParsingException {
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     /**
@@ -264,7 +264,7 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public List<Image> getSubChannelAvatars() throws ParsingException {
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     /**

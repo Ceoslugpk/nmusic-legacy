@@ -189,7 +189,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public List<Image> getBanners() {
         assertPageFetched();
         if (channelAgeGateRenderer != null) {
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         }
 
         return Optional.ofNullable(channelHeader)
@@ -215,7 +215,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                             .getArray(THUMBNAILS);
                 })
                 .map(YoutubeParsingHelper::getImagesFromThumbnailsArray)
-                .orElse(List.of());
+                .orElse(org.schabi.newpipe.extractor.LegacyCollections.listOf());
     }
 
     @Override
@@ -345,7 +345,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public List<Image> getParentChannelAvatars() {
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     @Override
@@ -385,7 +385,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final Consumer<String> addNonVideosTab = tabName -> {
             try {
                 tabs.add(YoutubeChannelTabLinkHandlerFactory.getInstance().fromQuery(
-                        channelId, List.of(tabName), ""));
+                        channelId, org.schabi.newpipe.extractor.LegacyCollections.listOf(tabName), ""));
             } catch (final ParsingException ignored) {
                 // Do not add the tab if we couldn't create the LinkHandler
             }
@@ -487,7 +487,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public List<String> getTags() throws ParsingException {
         assertPageFetched();
         if (channelAgeGateRenderer != null) {
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         }
 
         return jsonResponse.getObject("microformat")

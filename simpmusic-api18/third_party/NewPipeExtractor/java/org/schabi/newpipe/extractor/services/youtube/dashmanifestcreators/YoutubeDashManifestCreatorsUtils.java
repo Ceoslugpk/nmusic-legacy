@@ -620,8 +620,8 @@ public final class YoutubeDashManifestCreatorsUtils {
             }
         } else if (isAndroidStreamingUrl || isIosStreamingUrl) {
             try {
-                final var headers = Map.of("User-Agent",
-                        List.of(isAndroidStreamingUrl ? getAndroidUserAgent(null)
+                final var headers = org.schabi.newpipe.extractor.LegacyCollections.mapOf("User-Agent",
+                        org.schabi.newpipe.extractor.LegacyCollections.listOf(isAndroidStreamingUrl ? getAndroidUserAgent(null)
                                 : getIosUserAgent(null)));
                 final byte[] emptyBody = "".getBytes(StandardCharsets.UTF_8);
                 return downloader.post(baseStreamingUrl, headers, emptyBody);

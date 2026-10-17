@@ -300,7 +300,7 @@ public final class Utils {
     }
 
     public static boolean isBlank(final String string) {
-        return string == null || string.isBlank();
+        return string == null || org.schabi.newpipe.extractor.LegacyCollections.isBlank(string);
     }
 
     @Nonnull

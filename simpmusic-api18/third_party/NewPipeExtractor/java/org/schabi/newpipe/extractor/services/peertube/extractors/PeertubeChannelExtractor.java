@@ -87,11 +87,11 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public List<ListLinkHandler> getTabs() throws ParsingException {
-        return List.of(
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf(
                 PeertubeChannelTabLinkHandlerFactory.getInstance().fromQuery(getId(),
-                        List.of(ChannelTabs.VIDEOS), "", getBaseUrl()),
+                        org.schabi.newpipe.extractor.LegacyCollections.listOf(ChannelTabs.VIDEOS), "", getBaseUrl()),
                 PeertubeChannelTabLinkHandlerFactory.getInstance().fromQuery(getId(),
-                        List.of(ChannelTabs.PLAYLISTS), "", getBaseUrl()));
+                        org.schabi.newpipe.extractor.LegacyCollections.listOf(ChannelTabs.PLAYLISTS), "", getBaseUrl()));
     }
 
     @Override

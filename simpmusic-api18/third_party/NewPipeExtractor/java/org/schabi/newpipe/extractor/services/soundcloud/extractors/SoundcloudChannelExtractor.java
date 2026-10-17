@@ -105,7 +105,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public List<Image> getParentChannelAvatars() {
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     @Override
@@ -127,14 +127,14 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
                 + SoundcloudChannelTabLinkHandlerFactory.getUrlSuffix(ChannelTabs.LIKES);
         final String id = getId();
 
-        return List.of(
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf(
                 new ListLinkHandler(urlTracks, urlTracks, id,
-                        List.of(ChannelTabs.TRACKS), ""),
+                        org.schabi.newpipe.extractor.LegacyCollections.listOf(ChannelTabs.TRACKS), ""),
                 new ListLinkHandler(urlPlaylists, urlPlaylists, id,
-                        List.of(ChannelTabs.PLAYLISTS), ""),
+                        org.schabi.newpipe.extractor.LegacyCollections.listOf(ChannelTabs.PLAYLISTS), ""),
                 new ListLinkHandler(urlAlbums, urlAlbums, id,
-                        List.of(ChannelTabs.ALBUMS), ""),
+                        org.schabi.newpipe.extractor.LegacyCollections.listOf(ChannelTabs.ALBUMS), ""),
                 new ListLinkHandler(urlLikes, urlLikes, id,
-                        List.of(ChannelTabs.LIKES), ""));
+                        org.schabi.newpipe.extractor.LegacyCollections.listOf(ChannelTabs.LIKES), ""));
     }
 }

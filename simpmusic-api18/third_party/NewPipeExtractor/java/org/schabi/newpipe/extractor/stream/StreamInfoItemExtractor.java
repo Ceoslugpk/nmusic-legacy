@@ -82,7 +82,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      */
     @Nonnull
     default List<Image> getUploaderAvatars() throws ParsingException {
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     /**

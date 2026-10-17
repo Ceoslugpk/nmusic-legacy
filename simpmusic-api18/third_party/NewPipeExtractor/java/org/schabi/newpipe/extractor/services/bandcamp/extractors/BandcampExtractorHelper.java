@@ -60,7 +60,7 @@ public final class BandcampExtractorHelper {
      * GitHub Gist "Bandcamp File Format Parameters" by f2k1de</a>
      * </p>
      */
-    private static final List<ImageSuffix> IMAGE_URL_SUFFIXES_AND_RESOLUTIONS = List.of(
+    private static final List<ImageSuffix> IMAGE_URL_SUFFIXES_AND_RESOLUTIONS = org.schabi.newpipe.extractor.LegacyCollections.listOf(
             // ID | HEIGHT | WIDTH
             new ImageSuffix("10.jpg", HEIGHT_UNKNOWN, 1200, ResolutionLevel.HIGH),
             new ImageSuffix("101.jpg", 90, WIDTH_UNKNOWN, ResolutionLevel.LOW),
@@ -249,7 +249,7 @@ public final class BandcampExtractorHelper {
     @Nonnull
     public static List<Image> getImagesFromImageUrl(@Nullable final String imageUrl) {
         if (isNullOrEmpty(imageUrl)) {
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         }
 
         return getImagesFromImageBaseUrl(
@@ -271,7 +271,7 @@ public final class BandcampExtractorHelper {
     @Nonnull
     public static List<Image> getImagesFromImageId(final long id, final boolean isAlbum) {
         if (id == 0) {
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         }
 
         return getImagesFromImageBaseUrl(IMAGES_DOMAIN_AND_PATH + (isAlbum ? 'a' : "") + id + "_");

@@ -140,14 +140,14 @@ public class ChannelInfo extends Info {
     private String description;
     private String[] donationLinks;
     @Nonnull
-    private List<Image> avatars = List.of();
+    private List<Image> avatars = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     @Nonnull
-    private List<Image> banners = List.of();
+    private List<Image> banners = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     @Nonnull
-    private List<Image> parentChannelAvatars = List.of();
+    private List<Image> parentChannelAvatars = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     private boolean verified;
-    private List<ListLinkHandler> tabs = List.of();
-    private List<String> tags = List.of();
+    private List<ListLinkHandler> tabs = org.schabi.newpipe.extractor.LegacyCollections.listOf();
+    private List<String> tags = org.schabi.newpipe.extractor.LegacyCollections.listOf();
 
     public String getParentChannelName() {
         return parentChannelName;

@@ -97,7 +97,7 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     public List<ListLinkHandler> getTabs() throws ParsingException {
         // avoid keeping a reference to MediaCCCConferenceExtractor inside the lambda
         final JsonObject theConferenceData = conferenceData;
-        return List.of(new ReadyChannelTabListLinkHandler(getUrl(), getId(), ChannelTabs.VIDEOS,
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf(new ReadyChannelTabListLinkHandler(getUrl(), getId(), ChannelTabs.VIDEOS,
                 (service, linkHandler) ->
                         new MediaCCCChannelTabExtractor(service, linkHandler, theConferenceData)));
     }

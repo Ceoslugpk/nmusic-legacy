@@ -19,7 +19,7 @@ public class SearchInfo extends ListInfo<InfoItem> {
     private final String searchString;
     private String searchSuggestion;
     private boolean isCorrectedSearch;
-    private List<MetaInfo> metaInfo = List.of();
+    private List<MetaInfo> metaInfo = org.schabi.newpipe.extractor.LegacyCollections.listOf();
 
     public SearchInfo(final int serviceId,
                       final SearchQueryHandler qIHandler,

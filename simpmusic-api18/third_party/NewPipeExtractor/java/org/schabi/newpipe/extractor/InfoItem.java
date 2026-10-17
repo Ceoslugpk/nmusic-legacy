@@ -30,7 +30,7 @@ public abstract class InfoItem implements Serializable {
     private final String url;
     private final String name;
     @Nonnull
-    private List<Image> thumbnails = List.of();
+    private List<Image> thumbnails = org.schabi.newpipe.extractor.LegacyCollections.listOf();
 
     public InfoItem(final InfoType infoType,
                     final int serviceId,

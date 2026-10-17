@@ -109,7 +109,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public List<Image> getParentChannelAvatars() {
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     @Override

@@ -19,7 +19,7 @@ public final class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFac
     public static final String KIOSK_RECENT = "Recently added";
     public static final String KIOSK_LOCAL = "Local";
 
-    public static final Map<String, String> KIOSK_MAP = Map.of(
+    public static final Map<String, String> KIOSK_MAP = org.schabi.newpipe.extractor.LegacyCollections.mapOf(
             KIOSK_TRENDING, "%s/api/v1/videos?sort=-trending",
             KIOSK_MOST_LIKED, "%s/api/v1/videos?sort=-likes",
             KIOSK_RECENT, "%s/api/v1/videos?sort=-publishedAt",

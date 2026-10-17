@@ -262,7 +262,7 @@ public final class YoutubeStreamHelper {
     @Nonnull
     private static Map<String, List<String>> getMobileClientHeaders(
             @Nonnull final String userAgent) {
-        return Map.of("User-Agent", List.of(userAgent),
-                "X-Goog-Api-Format-Version", List.of("2"));
+        return org.schabi.newpipe.extractor.LegacyCollections.mapOf("User-Agent", org.schabi.newpipe.extractor.LegacyCollections.listOf(userAgent),
+                "X-Goog-Api-Format-Version", org.schabi.newpipe.extractor.LegacyCollections.listOf("2"));
     }
 }

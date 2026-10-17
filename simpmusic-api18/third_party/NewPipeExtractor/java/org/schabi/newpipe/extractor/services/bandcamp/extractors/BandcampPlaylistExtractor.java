@@ -79,7 +79,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
     @Override
     public List<Image> getThumbnails() throws ParsingException {
         if (albumJson.isNull("art_id")) {
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         } else {
             return getImagesFromImageId(albumJson.getLong("art_id"), true);
         }

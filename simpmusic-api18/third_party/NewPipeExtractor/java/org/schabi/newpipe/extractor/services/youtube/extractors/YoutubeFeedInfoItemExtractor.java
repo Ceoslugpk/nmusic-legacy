@@ -85,7 +85,7 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     public List<Image> getThumbnails() {
         final Element thumbnailElement = entryElement.getElementsByTag("media:thumbnail").first();
         if (thumbnailElement == null) {
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         }
 
         final String feedThumbnailUrl = thumbnailElement.attr("url");
@@ -93,7 +93,7 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
         // If the thumbnail URL is empty, it means that no thumbnail is available, return an empty
         // list in this case
         if (feedThumbnailUrl.isEmpty()) {
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         }
 
         // The hqdefault thumbnail has some black bars at the top and at the bottom, while the
@@ -124,7 +124,7 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
             width = 180;
         }
 
-        return List.of(
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf(
                 new Image(newFeedThumbnailUrl, height, width, ResolutionLevel.fromHeight(height)));
     }
 }

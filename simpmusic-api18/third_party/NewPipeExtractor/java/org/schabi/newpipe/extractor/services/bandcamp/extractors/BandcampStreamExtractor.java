@@ -127,7 +127,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Override
     public List<Image> getThumbnails() throws ParsingException {
         if (albumJson.isNull("art_id")) {
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         }
 
         return getImagesFromImageId(albumJson.getLong("art_id"), true);

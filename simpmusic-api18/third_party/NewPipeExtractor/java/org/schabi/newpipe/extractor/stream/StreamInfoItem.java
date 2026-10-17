@@ -44,7 +44,7 @@ public class StreamInfoItem extends InfoItem {
 
     private String uploaderUrl = null;
     @Nonnull
-    private List<Image> uploaderAvatars = List.of();
+    private List<Image> uploaderAvatars = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     private boolean uploaderVerified = false;
     private boolean shortFormContent = false;
     @Nonnull

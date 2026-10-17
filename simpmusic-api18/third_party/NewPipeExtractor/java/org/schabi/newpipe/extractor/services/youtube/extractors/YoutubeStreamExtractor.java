@@ -640,7 +640,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // There is no DASH manifest available with the iOS client
         return getManifestUrl(
                 "dash",
-                List.of(new Pair<>(androidStreamingData, androidStreamingUrlsPoToken)),
+                org.schabi.newpipe.extractor.LegacyCollections.listOf(new Pair<>(androidStreamingData, androidStreamingUrlsPoToken)),
                 // Return version 7 of the DASH manifest, which is the latest one, reducing
                 // manifest size and allowing playback with some DASH players
                 "mpd_version=7");
@@ -658,7 +658,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // unless a Safari macOS user agent is used
         return getManifestUrl(
                 "hls",
-                List.of(new Pair<>(iosStreamingData, iosStreamingUrlsPoToken),
+                org.schabi.newpipe.extractor.LegacyCollections.listOf(new Pair<>(iosStreamingData, iosStreamingUrlsPoToken),
                         new Pair<>(androidStreamingData, androidStreamingUrlsPoToken)),
                 "");
     }

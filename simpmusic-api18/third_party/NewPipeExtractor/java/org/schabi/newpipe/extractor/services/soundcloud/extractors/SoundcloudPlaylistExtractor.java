@@ -93,7 +93,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         } catch (final Exception ignored) {
         }
 
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     @Override

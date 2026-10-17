@@ -241,7 +241,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                     JsonUtils.getArray(videoInfo, "channelThumbnail.thumbnails"));
         }
 
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     @Override

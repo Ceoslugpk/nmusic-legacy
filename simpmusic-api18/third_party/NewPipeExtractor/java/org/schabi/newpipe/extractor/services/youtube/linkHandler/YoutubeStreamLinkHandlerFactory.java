@@ -49,7 +49,7 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
     private static final YoutubeStreamLinkHandlerFactory INSTANCE
             = new YoutubeStreamLinkHandlerFactory();
     private static final List<String> SUBPATHS
-            = List.of("embed/", "live/", "shorts/", "watch/", "v/", "w/");
+            = org.schabi.newpipe.extractor.LegacyCollections.listOf("embed/", "live/", "shorts/", "watch/", "v/", "w/");
 
     private YoutubeStreamLinkHandlerFactory() {
     }

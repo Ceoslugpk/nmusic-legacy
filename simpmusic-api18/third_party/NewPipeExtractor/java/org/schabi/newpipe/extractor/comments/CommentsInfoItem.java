@@ -17,7 +17,7 @@ public class CommentsInfoItem extends InfoItem {
     private Description commentText = Description.EMPTY_DESCRIPTION;
     private String uploaderName;
     @Nonnull
-    private List<Image> uploaderAvatars = List.of();
+    private List<Image> uploaderAvatars = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     private String uploaderUrl;
     private boolean uploaderVerified;
     private String textualUploadDate;

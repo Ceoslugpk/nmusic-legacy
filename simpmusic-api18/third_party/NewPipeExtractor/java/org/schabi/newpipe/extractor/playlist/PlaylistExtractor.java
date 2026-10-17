@@ -37,7 +37,7 @@ public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
 
     @Nonnull
     public List<Image> getBanners() throws ParsingException {
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     @Nonnull
@@ -52,7 +52,7 @@ public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
 
     @Nonnull
     public List<Image> getSubChannelAvatars() throws ParsingException {
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     public PlaylistInfo.PlaylistType getPlaylistType() throws ParsingException {

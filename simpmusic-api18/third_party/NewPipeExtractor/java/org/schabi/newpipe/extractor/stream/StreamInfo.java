@@ -360,7 +360,7 @@ public class StreamInfo extends Info {
 
     private StreamType streamType;
     @Nonnull
-    private List<Image> thumbnails = List.of();
+    private List<Image> thumbnails = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     private String textualUploadDate;
     private DateWrapper uploadDate;
     private long duration = -1;
@@ -374,25 +374,25 @@ public class StreamInfo extends Info {
     private String uploaderName = "";
     private String uploaderUrl = "";
     @Nonnull
-    private List<Image> uploaderAvatars = List.of();
+    private List<Image> uploaderAvatars = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     private boolean uploaderVerified = false;
     private long uploaderSubscriberCount = -1;
 
     private String subChannelName = "";
     private String subChannelUrl = "";
     @Nonnull
-    private List<Image> subChannelAvatars = List.of();
+    private List<Image> subChannelAvatars = org.schabi.newpipe.extractor.LegacyCollections.listOf();
 
-    private List<VideoStream> videoStreams = List.of();
-    private List<AudioStream> audioStreams = List.of();
-    private List<VideoStream> videoOnlyStreams = List.of();
+    private List<VideoStream> videoStreams = org.schabi.newpipe.extractor.LegacyCollections.listOf();
+    private List<AudioStream> audioStreams = org.schabi.newpipe.extractor.LegacyCollections.listOf();
+    private List<VideoStream> videoOnlyStreams = org.schabi.newpipe.extractor.LegacyCollections.listOf();
 
     private String dashMpdUrl = "";
     private String hlsUrl = "";
-    private List<InfoItem> relatedItems = List.of();
+    private List<InfoItem> relatedItems = org.schabi.newpipe.extractor.LegacyCollections.listOf();
 
     private long startPosition = 0;
-    private List<SubtitlesStream> subtitles = List.of();
+    private List<SubtitlesStream> subtitles = org.schabi.newpipe.extractor.LegacyCollections.listOf();
 
     private String host = "";
     private StreamExtractor.Privacy privacy;
@@ -400,9 +400,9 @@ public class StreamInfo extends Info {
     private String licence = "";
     private String supportInfo = "";
     private Locale language = null;
-    private List<String> tags = List.of();
-    private List<StreamSegment> streamSegments = List.of();
-    private List<MetaInfo> metaInfo = List.of();
+    private List<String> tags = org.schabi.newpipe.extractor.LegacyCollections.listOf();
+    private List<StreamSegment> streamSegments = org.schabi.newpipe.extractor.LegacyCollections.listOf();
+    private List<MetaInfo> metaInfo = org.schabi.newpipe.extractor.LegacyCollections.listOf();
     private boolean shortFormContent = false;
     @Nonnull
     private ContentAvailability contentAvailability = ContentAvailability.AVAILABLE;
@@ -410,7 +410,7 @@ public class StreamInfo extends Info {
     /**
      * Preview frames, e.g. for the storyboard / seekbar thumbnail preview
      */
-    private List<Frameset> previewFrames = List.of();
+    private List<Frameset> previewFrames = org.schabi.newpipe.extractor.LegacyCollections.listOf();
 
     /**
      * Get the stream type

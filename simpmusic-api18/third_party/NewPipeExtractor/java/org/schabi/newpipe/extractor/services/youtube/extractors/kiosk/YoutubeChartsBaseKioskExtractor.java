@@ -59,7 +59,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 abstract class YoutubeChartsBaseKioskExtractor extends KioskExtractor<StreamInfoItem> {
 
     // Extracted from YouTube Charts' HTML, in the array named LAUNCHED_CHART_COUNTRIES
-    protected static final Set<String> YT_CHARTS_SUPPORTED_COUNTRY_CODES = Set.of(
+    protected static final Set<String> YT_CHARTS_SUPPORTED_COUNTRY_CODES = org.schabi.newpipe.extractor.LegacyCollections.setOf(
             "AE", "AR", "AT", "AU", "BE", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CZ", "DE",
             "DK", "DO", "EC", "EE", "EG", "ES", "FI", "FR", "GB", "GT", "HN", "HU", "ID", "IE",
             "IL", "IN", "IS", "IT", "JP", "KE", "KR", "LU", "MX", "NG", "NI", "NL", "NO", "NZ",

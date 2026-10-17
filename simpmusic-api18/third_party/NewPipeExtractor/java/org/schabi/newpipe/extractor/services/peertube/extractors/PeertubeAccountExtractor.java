@@ -102,7 +102,7 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public List<Image> getParentChannelAvatars() {
-        return List.of();
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf();
     }
 
     @Override
@@ -113,11 +113,11 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public List<ListLinkHandler> getTabs() throws ParsingException {
-        return List.of(
+        return org.schabi.newpipe.extractor.LegacyCollections.listOf(
                 PeertubeChannelTabLinkHandlerFactory.getInstance().fromQuery(getId(),
-                        List.of(ChannelTabs.VIDEOS), "", getBaseUrl()),
+                        org.schabi.newpipe.extractor.LegacyCollections.listOf(ChannelTabs.VIDEOS), "", getBaseUrl()),
                 PeertubeChannelTabLinkHandlerFactory.getInstance().fromQuery(getId(),
-                        List.of(ChannelTabs.CHANNELS), "", getBaseUrl()));
+                        org.schabi.newpipe.extractor.LegacyCollections.listOf(ChannelTabs.CHANNELS), "", getBaseUrl()));
     }
 
     @Override

@@ -23,7 +23,7 @@ A separate reduced compatibility edition built for Android 4.3 (API 18) and newe
 - [Download the debug APK](simpmusic-api18/SimpMusic-API18-debug.apk)
 - Package: `com.maxrave.simpmusic.legacy`
 - Minimum SDK: 18; target SDK: 28
-- APK SHA-256: `6ec1625b80d5ca26d6495d7c5314cc89c1299f0a01e0ebd3ce35fe73b4fcc54a`
+- APK SHA-256: `35681755867c1f38e1e8ee8b69ba8218f53e23e853bc94a27069f9bade84016f`
 - [REA reverse-engineering findings and API 18 porting plan](SIMPMUSIC_API18_REA.md)
 
-This reduced edition is provided separately from nmusic Legacy. SimpMusic-derived distribution is under GPL-3.0; see [LICENSE](simpmusic-api18/LICENSE). YouTube Music search uses SimpMusic’s WEB_REMIX search endpoint and response shape; fixture tests cover the changed song ID fields. Version 0.4 downloads an AAC/M4A copy to the app cache before playback to avoid Android 4.3's native player handling YouTube HTTPS directly. Live stream extraction and playback/download still need a physical Android 4.3 device test.
+This reduced edition is provided separately from nmusic Legacy. SimpMusic-derived distribution is under GPL-3.0; see [LICENSE](simpmusic-api18/LICENSE). YouTube Music search uses SimpMusic’s WEB_REMIX search endpoint and response shape; fixture tests cover the changed song ID fields. The bundled NewPipe stream extractor's Java 9 collection factories are backported for Android 4.3, and playback downloads an AAC/M4A copy to the app cache before using the native player. Live stream extraction and playback/download still need a physical Android 4.3 device test.

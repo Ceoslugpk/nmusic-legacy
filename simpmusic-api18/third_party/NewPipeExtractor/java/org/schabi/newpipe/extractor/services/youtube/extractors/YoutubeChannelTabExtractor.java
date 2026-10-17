@@ -92,7 +92,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     public String getUrl() throws ParsingException {
         try {
             return YoutubeChannelTabLinkHandlerFactory.getInstance()
-                    .getUrl("channel/" + getId(), List.of(getName()), "");
+                    .getUrl("channel/" + getId(), org.schabi.newpipe.extractor.LegacyCollections.listOf(getName()), "");
         } catch (final ParsingException e) {
             return super.getUrl();
         }
@@ -162,7 +162,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 .orElse(null);
 
         final Page nextPage = getNextPageFrom(
-                continuation, List.of(channelName, channelUrl, verifiedStatus.toString()));
+                continuation, org.schabi.newpipe.extractor.LegacyCollections.listOf(channelName, channelUrl, verifiedStatus.toString()));
 
         return new InfoItemsPage<>(collector, nextPage);
     }

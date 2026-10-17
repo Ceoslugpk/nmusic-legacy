@@ -81,7 +81,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 .getBytes(StandardCharsets.UTF_8);
 
         browseMetadataResponse = getJsonPostResponse("browse",
-                List.of("$fields=" + SIDEBAR + "," + HEADER + "," + MICROFORMAT + ",alerts"),
+                org.schabi.newpipe.extractor.LegacyCollections.listOf("$fields=" + SIDEBAR + "," + HEADER + "," + MICROFORMAT + ",alerts"),
                 body,
                 localization);
 
@@ -251,7 +251,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     public List<Image> getUploaderAvatars() throws ParsingException {
         if (isNewPlaylistInterface) {
             // The new playlist interface doesn't provide an uploader avatar
-            return List.of();
+            return org.schabi.newpipe.extractor.LegacyCollections.listOf();
         }
 
         try {

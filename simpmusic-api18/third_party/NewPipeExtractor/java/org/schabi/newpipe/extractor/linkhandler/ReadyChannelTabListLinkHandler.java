@@ -43,7 +43,7 @@ public class ReadyChannelTabListLinkHandler extends ListLinkHandler {
             final String channelId,
             @Nonnull final String channelTab,
             @Nonnull final ChannelTabExtractorBuilder extractorBuilder) {
-        super(url, url, channelId, List.of(channelTab), "");
+        super(url, url, channelId, org.schabi.newpipe.extractor.LegacyCollections.listOf(channelTab), "");
         this.extractorBuilder = extractorBuilder;
     }
 

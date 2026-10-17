@@ -45,7 +45,7 @@ public final class ServiceList {
      * When creating a new service, put this service in the end of this list,
      * and give it the next free id.
      */
-    private static final List<StreamingService> SERVICES = List.of(
+    private static final List<StreamingService> SERVICES = org.schabi.newpipe.extractor.LegacyCollections.listOf(
             YouTube, SoundCloud, MediaCCC, PeerTube, Bandcamp);
 
     /**

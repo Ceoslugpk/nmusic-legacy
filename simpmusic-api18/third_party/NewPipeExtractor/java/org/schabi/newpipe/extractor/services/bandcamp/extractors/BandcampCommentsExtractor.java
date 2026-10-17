@@ -67,7 +67,7 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
 
         final String trackId = getTrackId();
         final String token = getNextPageToken(reviews);
-        return new InfoItemsPage<>(collector, new Page(List.of(trackId, token)));
+        return new InfoItemsPage<>(collector, new Page(org.schabi.newpipe.extractor.LegacyCollections.listOf(trackId, token)));
     }
 
     @Override
@@ -92,7 +92,7 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
         }
 
         return new InfoItemsPage<>(collector,
-                new Page(List.of(trackId, getNextPageToken(reviews))));
+                new Page(org.schabi.newpipe.extractor.LegacyCollections.listOf(trackId, getNextPageToken(reviews))));
     }
 
     private JsonObject fetchReviewsData(final String trackId, final String token)
