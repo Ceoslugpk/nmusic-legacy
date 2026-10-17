@@ -3,6 +3,7 @@ package com.maxrave.simpmusic.legacy;
 import org.junit.Test;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.LegacyCollections;
 import com.grack.nanojson.JsonArray;
 
 import static org.junit.Assert.assertEquals;
@@ -22,7 +23,7 @@ public class NewPipeApi18CompatibilityTest {
     }
 
     @Test
-    public void nanojsonArrayDeclaresItsOwnStreamMethod() {
-        assertEquals(2L, JsonArray.from("first", "second").stream().count());
+    public void nanojsonArrayStreamsThroughCollectionCompatibilityHelper() {
+        assertEquals(2L, LegacyCollections.stream(JsonArray.from("first", "second")).count());
     }
 }

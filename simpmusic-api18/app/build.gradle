@@ -6,14 +6,12 @@ android {
     namespace 'com.maxrave.simpmusic.legacy'
     compileSdk 35
 
-    sourceSets.main.java.srcDirs += ['../third_party/nanojson/java']
-
     defaultConfig {
         applicationId 'com.maxrave.simpmusic.legacy'
         minSdk 18
         targetSdk 28
-        versionCode 9
-        versionName '0.9.0-api18-nanojson-stream-compat'
+        versionCode 10
+        versionName '0.10.0-api18-collection-stream-dispatch'
         multiDexEnabled true
     }
 

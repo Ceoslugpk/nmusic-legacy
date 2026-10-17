@@ -7,6 +7,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collection;
+import java.util.stream.Stream;
 
 /** Java 9 collection/string helpers backported for Android API 18. */
 public final class LegacyCollections {
@@ -59,5 +61,10 @@ public final class LegacyCollections {
         if (value != null) return value;
         if (fallback == null) throw new NullPointerException("defaultObj");
         return fallback;
+    }
+
+    /** Route stream calls through Collection so API 18 resolves the desugared interface method. */
+    public static <T> Stream<T> stream(Collection<T> values) {
+        return values.stream();
     }
 }

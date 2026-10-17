@@ -300,24 +300,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return ageLimit;
         }
 
-        final boolean ageRestricted = getVideoSecondaryInfoRenderer()
-                .getObject("metadataRowContainer")
-                .getObject("metadataRowContainerRenderer")
-                .getArray("rows")
-                .stream()
+        final boolean ageRestricted = org.schabi.newpipe.extractor.LegacyCollections.stream(
+                getVideoSecondaryInfoRenderer()
+                        .getObject("metadataRowContainer")
+                        .getObject("metadataRowContainerRenderer")
+                        .getArray("rows"))
                 // Only JsonObjects allowed
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
-                .flatMap(metadataRow -> metadataRow
-                        .getObject("metadataRowRenderer")
-                        .getArray("contents")
-                        .stream()
+                .flatMap(metadataRow -> org.schabi.newpipe.extractor.LegacyCollections.stream(
+                        metadataRow.getObject("metadataRowRenderer").getArray("contents"))
                         // Only JsonObjects allowed
                         .filter(JsonObject.class::isInstance)
                         .map(JsonObject.class::cast))
-                .flatMap(content -> content
-                        .getArray("runs")
-                        .stream()
+                .flatMap(content -> org.schabi.newpipe.extractor.LegacyCollections.stream(
+                        content.getArray("runs"))
                         // Only JsonObjects allowed
                         .filter(JsonObject.class::isInstance)
                         .map(JsonObject.class::cast))
@@ -432,7 +429,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static long parseLikeCountFromLikeButtonRenderer(
             @Nonnull final JsonArray topLevelButtons) throws ParsingException {
         String likesString = null;
-        final JsonObject likeToggleButtonRenderer = topLevelButtons.stream()
+        final JsonObject likeToggleButtonRenderer = org.schabi.newpipe.extractor.LegacyCollections.stream(topLevelButtons)
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
                 .map(button -> button.getObject("segmentedLikeDislikeButtonRenderer")
@@ -486,7 +483,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static long parseLikeCountFromLikeButtonViewModel(
             @Nonnull final JsonArray topLevelButtons) throws ParsingException {
         // Try first with the current video actions buttons data structure
-        final JsonObject likeToggleButtonViewModel = topLevelButtons.stream()
+        final JsonObject likeToggleButtonViewModel = org.schabi.newpipe.extractor.LegacyCollections.stream(topLevelButtons)
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
                 .map(button -> button.getObject("segmentedLikeDislikeButtonViewModel")
@@ -791,7 +788,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     .getArray("results");
 
             final TimeAgoParser timeAgoParser = getTimeAgoParser();
-            results.stream()
+            org.schabi.newpipe.extractor.LegacyCollections.stream(results)
                     .filter(JsonObject.class::isInstance)
                     .map(JsonObject.class::cast)
                     .map(result -> {
@@ -1099,12 +1096,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     private JsonObject getVideoInfoRenderer(@Nonnull final String videoRendererName) {
-        return nextResponse.getObject("contents")
+        return org.schabi.newpipe.extractor.LegacyCollections.stream(
+                nextResponse.getObject("contents")
                 .getObject("twoColumnWatchNextResults")
                 .getObject("results")
                 .getObject("results")
-                .getArray("contents")
-                .stream()
+                .getArray("contents"))
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
                 .filter(content -> content.has(videoRendererName))
@@ -1274,7 +1271,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return java.util.stream.Stream.empty();
         }
 
-        return streamingData.getArray(streamingDataKey).stream()
+        return org.schabi.newpipe.extractor.LegacyCollections.stream(
+                streamingData.getArray(streamingDataKey))
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
                 .map(formatData -> {
@@ -1545,8 +1543,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return Collections.emptyList();
         }
 
-        final JsonArray segmentsArray = nextResponse.getArray("engagementPanels")
-                .stream()
+        final JsonArray segmentsArray = org.schabi.newpipe.extractor.LegacyCollections.stream(
+                nextResponse.getArray("engagementPanels"))
                 // Check if object is a JsonObject
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
@@ -1571,7 +1569,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final long duration = getLength();
         final List<StreamSegment> segments = new ArrayList<>();
-        for (final JsonObject segmentJson : segmentsArray.stream()
+        for (final JsonObject segmentJson : org.schabi.newpipe.extractor.LegacyCollections.stream(segmentsArray)
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
                 .map(object -> object.getObject("macroMarkersListItemRenderer"))
