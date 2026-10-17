@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,7 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -41,11 +42,13 @@ public final class MainActivity extends Activity {
     private final ArrayList<Song> visibleSongs = new ArrayList<Song>();
     private EditText search;
     private TextView nowPlaying;
+    private TextView nowArtist;
     private TextView time;
     private TextView message;
     private SeekBar seekBar;
     private Button playButton;
-    private Button modeButton;
+    private Button youtubeTab;
+    private Button deviceTab;
     private SongAdapter adapter;
     private String currentUri;
     private String currentQueueKey;
@@ -64,7 +67,8 @@ public final class MainActivity extends Activity {
             boolean playing = intent.getBooleanExtra(LocalPlaybackService.EXTRA_PLAYING, false);
             int position = intent.getIntExtra(LocalPlaybackService.EXTRA_POSITION, 0);
             int duration = intent.getIntExtra(LocalPlaybackService.EXTRA_DURATION, 0);
-            nowPlaying.setText(title == null ? "Nothing playing" : title + "\n" + safeArtist(artist));
+            nowPlaying.setText(title == null ? "Nothing playing yet" : title);
+            nowArtist.setText(title == null ? "Choose a song to start listening" : safeArtist(artist));
             playButton.setText(playing ? "Pause" : "Play");
             seekBar.setMax(Math.max(1, duration));
             if (!draggingSeekBar) seekBar.setProgress(Math.min(position, seekBar.getMax()));
@@ -114,46 +118,100 @@ public final class MainActivity extends Activity {
     private void buildInterface() {
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(14), dp(10), dp(14), dp(8));
-        root.setBackgroundColor(Color.rgb(16, 20, 17));
-        TextView heading = new TextView(this);
-        heading.setText("SimpMusic  /  Legacy"); heading.setTextColor(Color.WHITE); heading.setTextSize(22);
-        heading.setGravity(Gravity.CENTER_VERTICAL);
-        root.addView(heading, new LinearLayout.LayoutParams(-1, dp(40)));
+        root.setPadding(dp(18), dp(8), dp(18), dp(8));
+        root.setBackgroundColor(Color.rgb(10, 14, 13));
+
+        LinearLayout header = new LinearLayout(this);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        TextView mark = new TextView(this);
+        mark.setText("♪"); mark.setTextColor(Color.rgb(92, 231, 179)); mark.setTextSize(28);
+        mark.setGravity(Gravity.CENTER); mark.setTypeface(Typeface.DEFAULT_BOLD);
+        header.addView(mark, new LinearLayout.LayoutParams(dp(42), dp(44)));
+        LinearLayout brand = new LinearLayout(this); brand.setOrientation(LinearLayout.VERTICAL);
+        TextView heading = new TextView(this); heading.setText("simp music"); heading.setTextColor(Color.WHITE);
+        heading.setTextSize(19); heading.setTypeface(Typeface.DEFAULT_BOLD);
+        TextView subheading = new TextView(this); subheading.setText("MUSIC FOR EVERYWHERE");
+        subheading.setTextColor(Color.rgb(130, 151, 143)); subheading.setTextSize(9);
+        brand.addView(heading); brand.addView(subheading); header.addView(brand);
+        root.addView(header, new LinearLayout.LayoutParams(-1, dp(48)));
 
         LinearLayout searchRow = new LinearLayout(this);
-        search = new EditText(this); search.setSingleLine(true); search.setHint(R.string.search_hint);
-        search.setTextColor(Color.WHITE); search.setHintTextColor(Color.LTGRAY); search.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-        searchRow.addView(search, new LinearLayout.LayoutParams(0, dp(48), 1));
-        Button searchButton = button("YouTube"); searchRow.addView(searchButton, new LinearLayout.LayoutParams(dp(92), dp(48)));
-        root.addView(searchRow);
-        modeButton = button("Device music"); root.addView(modeButton, new LinearLayout.LayoutParams(-1, dp(40)));
+        searchRow.setGravity(Gravity.CENTER_VERTICAL);
+        searchRow.setPadding(dp(6), 0, dp(5), 0);
+        searchRow.setBackground(rounded(Color.rgb(22, 30, 27), 14, Color.rgb(43, 58, 51)));
+        search = new EditText(this); search.setSingleLine(true); search.setHint("Search songs, artists, albums");
+        search.setTextColor(Color.WHITE); search.setHintTextColor(Color.rgb(139, 157, 149));
+        search.setTextSize(15); search.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        search.setBackgroundColor(Color.TRANSPARENT); search.setPadding(dp(11), 0, dp(6), 0);
+        searchRow.addView(search, new LinearLayout.LayoutParams(0, dp(50), 1));
+        Button searchButton = button("SEARCH"); searchButton.setTextSize(11); searchButton.setTypeface(Typeface.DEFAULT_BOLD);
+        searchButton.setTextColor(Color.rgb(7, 25, 18)); searchButton.setBackground(rounded(Color.rgb(92, 231, 179), 11, Color.TRANSPARENT));
+        searchRow.addView(searchButton, new LinearLayout.LayoutParams(dp(86), dp(40)));
+        LinearLayout.LayoutParams searchParams = new LinearLayout.LayoutParams(-1, dp(54));
+        searchParams.topMargin = dp(7); root.addView(searchRow, searchParams);
 
-        nowPlaying = new TextView(this); nowPlaying.setText("Nothing playing"); nowPlaying.setTextColor(Color.WHITE);
-        nowPlaying.setTextSize(16); nowPlaying.setPadding(0, dp(8), 0, 0);
-        root.addView(nowPlaying, new LinearLayout.LayoutParams(-1, dp(52)));
-        seekBar = new SeekBar(this); seekBar.setContentDescription("Playback position");
-        root.addView(seekBar, new LinearLayout.LayoutParams(-1, dp(32)));
-        time = new TextView(this); time.setText("00:00 / 00:00"); time.setTextColor(Color.LTGRAY); time.setGravity(Gravity.CENTER_HORIZONTAL);
-        root.addView(time, new LinearLayout.LayoutParams(-1, dp(22)));
+        LinearLayout tabs = new LinearLayout(this); tabs.setPadding(dp(3), dp(3), dp(3), dp(3));
+        tabs.setBackground(rounded(Color.rgb(18, 24, 22), 13, Color.TRANSPARENT));
+        youtubeTab = button("YOUTUBE"); deviceTab = button("ON DEVICE");
+        youtubeTab.setTextSize(11); deviceTab.setTextSize(11);
+        youtubeTab.setTypeface(Typeface.DEFAULT_BOLD); deviceTab.setTypeface(Typeface.DEFAULT_BOLD);
+        tabs.addView(youtubeTab, new LinearLayout.LayoutParams(0, dp(38), 1));
+        tabs.addView(deviceTab, new LinearLayout.LayoutParams(0, dp(38), 1));
+        LinearLayout.LayoutParams tabParams = new LinearLayout.LayoutParams(-1, dp(48));
+        tabParams.topMargin = dp(9); root.addView(tabs, tabParams);
 
-        LinearLayout controls = new LinearLayout(this); controls.setGravity(Gravity.CENTER);
-        Button previous = button("Previous"); playButton = button("Play"); Button next = button("Next");
-        controls.addView(previous, new LinearLayout.LayoutParams(0, dp(44), 1));
-        controls.addView(playButton, new LinearLayout.LayoutParams(0, dp(44), 1));
-        controls.addView(next, new LinearLayout.LayoutParams(0, dp(44), 1));
-        root.addView(controls, new LinearLayout.LayoutParams(-1, dp(46)));
-        message = new TextView(this); message.setText(R.string.empty_library); message.setTextColor(Color.LTGRAY);
-        message.setGravity(Gravity.CENTER_VERTICAL); root.addView(message, new LinearLayout.LayoutParams(-1, dp(34)));
-        ListView list = new ListView(this); adapter = new SongAdapter(); list.setAdapter(adapter); list.setDividerHeight(dp(1));
+        message = new TextView(this); message.setText("Search YouTube Music or browse songs on this device.");
+        message.setTextColor(Color.rgb(151, 169, 160)); message.setTextSize(12);
+        message.setGravity(Gravity.CENTER_VERTICAL); message.setPadding(dp(4), 0, dp(4), 0);
+        root.addView(message, new LinearLayout.LayoutParams(-1, dp(34)));
+
+        ListView list = new ListView(this); adapter = new SongAdapter(); list.setAdapter(adapter); list.setDividerHeight(dp(7));
+        list.setSelector(android.R.color.transparent); list.setCacheColorHint(Color.TRANSPARENT);
+        list.setPadding(0, dp(3), 0, dp(7)); list.setClipToPadding(false);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id) { play(visibleSongs.get(position)); }
         });
-        root.addView(list, new LinearLayout.LayoutParams(-1, 0, 1)); setContentView(root);
+        root.addView(list, new LinearLayout.LayoutParams(-1, 0, 1));
+
+        LinearLayout playerCard = new LinearLayout(this); playerCard.setOrientation(LinearLayout.VERTICAL);
+        playerCard.setPadding(dp(13), dp(8), dp(13), dp(7));
+        playerCard.setBackground(rounded(Color.rgb(20, 28, 25), 15, Color.rgb(39, 52, 46)));
+        TextView nowLabel = new TextView(this); nowLabel.setText("NOW PLAYING"); nowLabel.setTextColor(Color.rgb(92, 231, 179));
+        nowLabel.setTextSize(9); nowLabel.setTypeface(Typeface.DEFAULT_BOLD);
+        playerCard.addView(nowLabel, new LinearLayout.LayoutParams(-1, dp(16)));
+        nowPlaying = new TextView(this); nowPlaying.setText("Nothing playing yet"); nowPlaying.setTextColor(Color.WHITE);
+        nowPlaying.setTextSize(14); nowPlaying.setSingleLine(true); nowPlaying.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        nowPlaying.setTypeface(Typeface.DEFAULT_BOLD);
+        playerCard.addView(nowPlaying, new LinearLayout.LayoutParams(-1, dp(26)));
+        nowArtist = new TextView(this); nowArtist.setText("Choose a song to start listening");
+        nowArtist.setTextColor(Color.rgb(151, 169, 160)); nowArtist.setTextSize(10);
+        nowArtist.setSingleLine(true); nowArtist.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        playerCard.addView(nowArtist, new LinearLayout.LayoutParams(-1, dp(15)));
+        seekBar = new SeekBar(this); seekBar.setContentDescription("Playback position");
+        playerCard.addView(seekBar, new LinearLayout.LayoutParams(-1, dp(25)));
+        LinearLayout playerBottom = new LinearLayout(this); playerBottom.setGravity(Gravity.CENTER_VERTICAL);
+        time = new TextView(this); time.setText("00:00 / 00:00"); time.setTextColor(Color.rgb(151, 169, 160)); time.setTextSize(10);
+        playerBottom.addView(time, new LinearLayout.LayoutParams(0, dp(32), 1));
+        Button previous = button("PREV"); playButton = button("PLAY"); Button next = button("NEXT");
+        previous.setTextSize(10); playButton.setTextSize(11); next.setTextSize(10);
+        previous.setTextColor(Color.WHITE); next.setTextColor(Color.WHITE); playButton.setTextColor(Color.rgb(7, 25, 18));
+        previous.setBackground(rounded(Color.rgb(38, 50, 45), 12, Color.TRANSPARENT));
+        next.setBackground(rounded(Color.rgb(38, 50, 45), 12, Color.TRANSPARENT));
+        playButton.setTypeface(Typeface.DEFAULT_BOLD); playButton.setBackground(rounded(Color.rgb(92, 231, 179), 12, Color.TRANSPARENT));
+        playerBottom.addView(previous, new LinearLayout.LayoutParams(dp(62), dp(34)));
+        LinearLayout.LayoutParams playParams = new LinearLayout.LayoutParams(dp(70), dp(34));
+        playParams.leftMargin = dp(6); playParams.rightMargin = dp(6); playerBottom.addView(playButton, playParams);
+        playerBottom.addView(next, new LinearLayout.LayoutParams(dp(62), dp(34)));
+        playerCard.addView(playerBottom);
+        LinearLayout.LayoutParams playerParams = new LinearLayout.LayoutParams(-1, dp(127));
+        playerParams.topMargin = dp(6); playerParams.bottomMargin = dp(2); root.addView(playerCard, playerParams);
+        setContentView(root);
+        setYoutubeMode(true);
 
         searchButton.setOnClickListener(new View.OnClickListener() { @Override public void onClick(View v) { searchYouTube(); } });
         search.setOnEditorActionListener((v, actionId, event) -> { searchYouTube(); return true; });
-        modeButton.setOnClickListener(new View.OnClickListener() { @Override public void onClick(View v) { setYoutubeMode(!youtubeMode); } });
+        youtubeTab.setOnClickListener(new View.OnClickListener() { @Override public void onClick(View v) { setYoutubeMode(true); } });
+        deviceTab.setOnClickListener(new View.OnClickListener() { @Override public void onClick(View v) { setYoutubeMode(false); } });
         search.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) { if (!youtubeMode) filterSongs(s.toString()); }
@@ -191,9 +249,9 @@ public final class MainActivity extends Activity {
 
     private void setYoutubeMode(boolean enabled) {
         youtubeMode = enabled;
-        modeButton.setText(enabled ? "Show device music" : "Show YouTube results");
+        styleTab(youtubeTab, enabled); styleTab(deviceTab, !enabled);
         visibleSongs.clear(); visibleSongs.addAll(enabled ? remoteSongs : songs); adapter.notifyDataSetChanged();
-        if (enabled) message.setText(remoteSongs.isEmpty() ? "Search YouTube for songs and videos." : remoteSongs.size() + " YouTube results");
+        if (enabled) message.setText(remoteSongs.isEmpty() ? "Search YouTube Music for songs and artists." : remoteSongs.size() + " YouTube Music results");
         else filterSongs(search.getText().toString());
     }
 
@@ -312,7 +370,20 @@ public final class MainActivity extends Activity {
         catch (Exception error) { message.setText("Permission request could not be opened."); }
     }
     private void sendServiceAction(String action) { Intent intent = new Intent(this, LocalPlaybackService.class); intent.setAction(action); startService(intent); }
-    private Button button(String label) { Button result = new Button(this); result.setText(label); result.setTextColor(Color.WHITE); result.setContentDescription(label); return result; }
+    private Button button(String label) {
+        Button result = new Button(this); result.setText(label); result.setTextColor(Color.WHITE);
+        result.setContentDescription(label); result.setAllCaps(false); result.setMinHeight(0); result.setMinimumHeight(0);
+        result.setPadding(dp(4), 0, dp(4), 0); return result;
+    }
+    private GradientDrawable rounded(int color, int radius, int stroke) {
+        GradientDrawable shape = new GradientDrawable(); shape.setColor(color); shape.setCornerRadius(dp(radius));
+        if (stroke != Color.TRANSPARENT) shape.setStroke(dp(1), stroke);
+        return shape;
+    }
+    private void styleTab(Button tab, boolean selected) {
+        tab.setTextColor(selected ? Color.rgb(7, 25, 18) : Color.rgb(158, 176, 167));
+        tab.setBackground(rounded(selected ? Color.rgb(92, 231, 179) : Color.TRANSPARENT, 10, Color.TRANSPARENT));
+    }
     private int dp(int value) { return (int) (value * getResources().getDisplayMetrics().density + 0.5f); }
     private static String safeArtist(String artist) { return artist == null || artist.length() == 0 ? "Unknown artist" : artist; }
     private static String safeMessage(Exception error) { return error == null || error.getMessage() == null ? "unknown error" : error.getMessage(); }
@@ -327,13 +398,31 @@ public final class MainActivity extends Activity {
             if (convertView instanceof LinearLayout && "song-row".equals(convertView.getTag())) row = (LinearLayout) convertView;
             else {
                 row = new LinearLayout(MainActivity.this); row.setTag("song-row"); row.setGravity(Gravity.CENTER_VERTICAL);
-                TextView title = new TextView(MainActivity.this); title.setTag("song-title"); title.setTextColor(Color.WHITE); title.setTextSize(15); title.setPadding(dp(8), dp(6), dp(4), dp(6));
-                row.addView(title, new LinearLayout.LayoutParams(0, dp(58), 1));
-                Button download = button("Save"); download.setTag("song-download"); row.addView(download, new LinearLayout.LayoutParams(dp(76), dp(48)));
+                row.setPadding(dp(9), dp(7), dp(8), dp(7));
+                row.setBackground(rounded(Color.rgb(19, 26, 23), 13, Color.rgb(34, 45, 40)));
+                TextView art = new TextView(MainActivity.this); art.setTag("song-art"); art.setTextColor(Color.rgb(7, 25, 18));
+                art.setTextSize(18); art.setTypeface(Typeface.DEFAULT_BOLD); art.setGravity(Gravity.CENTER);
+                art.setBackground(rounded(Color.rgb(92, 231, 179), 11, Color.TRANSPARENT));
+                row.addView(art, new LinearLayout.LayoutParams(dp(48), dp(48)));
+                LinearLayout textBox = new LinearLayout(MainActivity.this); textBox.setOrientation(LinearLayout.VERTICAL);
+                textBox.setPadding(dp(10), 0, dp(4), 0);
+                TextView title = new TextView(MainActivity.this); title.setTag("song-title"); title.setTextColor(Color.WHITE);
+                title.setTextSize(14); title.setTypeface(Typeface.DEFAULT_BOLD); title.setSingleLine(true);
+                title.setEllipsize(android.text.TextUtils.TruncateAt.END);
+                TextView artist = new TextView(MainActivity.this); artist.setTag("song-artist"); artist.setTextColor(Color.rgb(151, 169, 160));
+                artist.setTextSize(11); artist.setSingleLine(true); artist.setEllipsize(android.text.TextUtils.TruncateAt.END);
+                textBox.addView(title); textBox.addView(artist);
+                row.addView(textBox, new LinearLayout.LayoutParams(0, dp(48), 1));
+                Button download = button("↓"); download.setTag("song-download"); download.setTextSize(21);
+                download.setTextColor(Color.rgb(92, 231, 179)); download.setBackground(rounded(Color.rgb(32, 44, 39), 11, Color.TRANSPARENT));
+                row.addView(download, new LinearLayout.LayoutParams(dp(42), dp(42)));
             }
             final Song song = visibleSongs.get(position);
-            TextView title = (TextView) row.getChildAt(0); title.setText(song.title + "\n" + safeArtist(song.artist));
-            Button download = (Button) row.getChildAt(1); download.setVisibility(song.online ? View.VISIBLE : View.GONE);
+            TextView art = (TextView) row.getChildAt(0); art.setText(song.title.substring(0, 1).toUpperCase(Locale.US));
+            LinearLayout textBox = (LinearLayout) row.getChildAt(1);
+            TextView title = (TextView) textBox.getChildAt(0); title.setText(song.title);
+            TextView artist = (TextView) textBox.getChildAt(1); artist.setText(safeArtist(song.artist));
+            Button download = (Button) row.getChildAt(2); download.setVisibility(song.online ? View.VISIBLE : View.GONE);
             download.setOnClickListener(new View.OnClickListener() { @Override public void onClick(View v) { download(song); } });
             row.setContentDescription(song.title + ", " + safeArtist(song.artist) + (song.online ? ", tap to play, Save to download" : ", tap to play"));
             return row;

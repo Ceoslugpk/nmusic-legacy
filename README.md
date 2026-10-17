@@ -23,7 +23,7 @@ A separate reduced compatibility edition built for Android 4.3 (API 18) and newe
 - [Download the debug APK](simpmusic-api18/SimpMusic-API18-debug.apk)
 - Package: `com.maxrave.simpmusic.legacy`
 - Minimum SDK: 18; target SDK: 28
-- APK SHA-256: `7bada16c7d85c9875fe95ffe9353f04ac79a8ac770527c03821a6e380b4a1194`
+- APK SHA-256: `66b359705dc3c4da837a1035e4f21b0332d4e4bce090a53e6aeffd97791603e6`
 - [REA reverse-engineering findings and API 18 porting plan](SIMPMUSIC_API18_REA.md)
 
-This reduced edition is provided separately from nmusic Legacy. SimpMusic-derived distribution is under GPL-3.0; see [LICENSE](simpmusic-api18/LICENSE). The updated API 18 build compiles and its APK manifest was verified; YouTube runtime behavior has not yet been tested on an Android 4.3 device.
+This reduced edition is provided separately from nmusic Legacy. SimpMusic-derived distribution is under GPL-3.0; see [LICENSE](simpmusic-api18/LICENSE). YouTube Music search uses SimpMusic’s WEB_REMIX search endpoint and response shape; fixture tests cover the changed song ID fields. Live requests and playback still need an Android 4.3 device test.
