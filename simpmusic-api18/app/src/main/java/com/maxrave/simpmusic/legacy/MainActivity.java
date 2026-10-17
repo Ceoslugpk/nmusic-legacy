@@ -63,6 +63,7 @@ public final class MainActivity extends Activity {
             if (!LocalPlaybackService.ACTION_UPDATE.equals(intent.getAction())) return;
             String title = intent.getStringExtra(LocalPlaybackService.EXTRA_TITLE);
             String artist = intent.getStringExtra(LocalPlaybackService.EXTRA_ARTIST);
+            String playbackError = intent.getStringExtra(LocalPlaybackService.EXTRA_ERROR);
             currentUri = intent.getStringExtra(LocalPlaybackService.EXTRA_URI);
             boolean playing = intent.getBooleanExtra(LocalPlaybackService.EXTRA_PLAYING, false);
             int position = intent.getIntExtra(LocalPlaybackService.EXTRA_POSITION, 0);
@@ -73,6 +74,7 @@ public final class MainActivity extends Activity {
             seekBar.setMax(Math.max(1, duration));
             if (!draggingSeekBar) seekBar.setProgress(Math.min(position, seekBar.getMax()));
             time.setText(formatTime(position) + " / " + formatTime(duration));
+            if (playbackError != null) message.setText("Playback failed: " + playbackError);
         }
     };
 
@@ -296,14 +298,32 @@ public final class MainActivity extends Activity {
     private void play(final Song song) {
         currentQueueKey = song.online ? song.youtubeUrl : song.uri.toString();
         if (!song.online) { startPlayback(song.uri.toString(), song.title, song.artist); return; }
-        message.setText("Resolving YouTube audio…");
+        message.setText("Preparing YouTube audio for this device…");
         new AsyncTask<Void, Void, String>() {
             private Exception failure;
             @Override protected String doInBackground(Void... ignored) {
-                try { return YoutubeClient.resolveAudioUrl(song.youtubeUrl); } catch (Exception error) { failure = error; return null; }
+                File directory = new File(getCacheDir(), "youtube-audio");
+                if (!directory.exists() && !directory.mkdirs()) {
+                    failure = new java.io.IOException("Could not create the playback cache.");
+                    return null;
+                }
+                final File cached = new File(directory, Long.toHexString(song.id) + ".m4a");
+                if (cached.isFile() && cached.length() > 0) return cached.getAbsolutePath();
+                File partial = new File(directory, Long.toHexString(song.id) + ".part");
+                try {
+                    YoutubeClient.downloadAudio(song.youtubeUrl, partial);
+                    if (partial.length() == 0) throw new java.io.IOException("YouTube returned an empty audio file.");
+                    if (cached.exists() && !cached.delete()) throw new java.io.IOException("Could not replace the old cache file.");
+                    if (!partial.renameTo(cached)) throw new java.io.IOException("Could not finish preparing the audio file.");
+                    return cached.getAbsolutePath();
+                } catch (Exception error) {
+                    failure = error;
+                    partial.delete();
+                    return null;
+                }
             }
             @Override protected void onPostExecute(String url) {
-                if (url == null) message.setText("Could not play this result: " + safeMessage(failure));
+                if (url == null) message.setText("Could not prepare this result: " + safeMessage(failure));
                 else startPlayback(url, song.title, song.artist);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

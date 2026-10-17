@@ -1,6 +1,6 @@
 # SimpMusic Legacy (Android 4.3+)
 
-This API 18 edition now includes online YouTube search, playback, and saving audio for offline listening, alongside music already stored on the device. Search results are fetched on demand; selecting a result resolves its audio stream and starts the existing background player. **Save** stores the extracted audio in `Music/SimpMusic` and adds it to Android's media scanner.
+This API 18 edition includes online YouTube search, a background player, and saving audio for offline listening, alongside music already stored on the device. Search results are fetched on demand; selecting a result resolves and downloads an AAC/M4A stream to the app cache before starting the player, avoiding direct YouTube HTTPS playback through Android 4.3's older native player. **Save** stores extracted audio in `Music/SimpMusic` and adds it to Android's media scanner.
 
 This is a reduced compatibility client based on REA inspection of SimpMusic v2.3.0 and its shared YouTube Music/extractor flow. It is not the full modern SimpMusic feature set: account sync, recommendations, lyrics, playlists/queue management, casts, equalizer, modern Compose UI, etc. are not ported yet. YouTube's undocumented endpoints and stream formats can change, and playback/download availability depends on region, age restrictions, and YouTube service changes. On Android 4.3, the OS's TLS certificates/codecs can also limit connections or supported formats.
 
@@ -14,4 +14,4 @@ Install JDK 17 or newer and Android SDK Platform 35 / Build Tools 35.0.0, set `A
 ./gradlew assembleDebug
 ```
 
-The APK is written to `app/build/outputs/apk/debug/app-debug.apk` and checked into this folder as [`SimpMusic-API18-debug.apk`](SimpMusic-API18-debug.apk). Its package is `com.maxrave.simpmusic.legacy`, separate from the modern app. The app targets API 28 so storage downloads use the public Music directory on API 18 devices. The search-response parser has local fixture tests. Live network calls and end-to-end playback/download have not yet been exercised on a physical Android 4.3 device.
+The APK is written to `app/build/outputs/apk/debug/app-debug.apk` and checked into this folder as [`SimpMusic-API18-debug.apk`](SimpMusic-API18-debug.apk). Its package is `com.maxrave.simpmusic.legacy`, separate from the modern app. The app targets API 28 so storage downloads use the public Music directory on API 18 devices. The search-response parser has local fixture tests. Live network calls and end-to-end playback/download have not yet been exercised on a physical Android 4.3 device; player decoder/network failures are now shown in the app.

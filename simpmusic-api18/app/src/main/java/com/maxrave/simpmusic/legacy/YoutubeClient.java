@@ -230,6 +230,9 @@ final class YoutubeClient {
         connection.setReadTimeout(30000);
         connection.setInstanceFollowRedirects(true);
         connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 9; Mobile) AppleWebKit/537.36 Chrome/120.0 Mobile Safari/537.36");
+        connection.setRequestProperty("Referer", "https://www.youtube.com/");
+        connection.setRequestProperty("Accept", "*/*");
+        connection.setRequestProperty("Accept-Encoding", "identity");
         SSLSocketFactory tls = AndroidDownloader.TLS12;
         if (connection instanceof HttpsURLConnection && tls != null) ((HttpsURLConnection) connection).setSSLSocketFactory(tls);
         int status = connection.getResponseCode();

@@ -26,6 +26,7 @@ public final class LocalPlaybackService extends Service implements AudioManager.
     static final String EXTRA_PLAYING = "playing";
     static final String EXTRA_POSITION = "position";
     static final String EXTRA_DURATION = "duration";
+    static final String EXTRA_ERROR = "error";
     private static final int NOTIFICATION_ID = 1804;
     // PendingIntent.FLAG_IMMUTABLE was added in API 23; keep this source buildable against API 18.
     private static final int FLAG_IMMUTABLE_COMPAT = 0x04000000;
@@ -39,6 +40,7 @@ public final class LocalPlaybackService extends Service implements AudioManager.
     private boolean prepared;
     private boolean playing;
     private boolean resumeOnAudioFocusGain;
+    private String playbackError;
 
     private final Runnable progressUpdate = new Runnable() {
         @Override public void run() {
@@ -76,6 +78,7 @@ public final class LocalPlaybackService extends Service implements AudioManager.
         String uriText = intent.getStringExtra(EXTRA_URI);
         if (uriText == null) return;
         currentUri = uriText;
+        playbackError = null;
         title = intent.getStringExtra(EXTRA_TITLE);
         artist = intent.getStringExtra(EXTRA_ARTIST);
         releasePlayer();
@@ -94,7 +97,12 @@ public final class LocalPlaybackService extends Service implements AudioManager.
             player.setWakeMode(getApplicationContext(), android.os.PowerManager.PARTIAL_WAKE_LOCK);
             Uri source = Uri.parse(currentUri);
             if ("http".equalsIgnoreCase(source.getScheme()) || "https".equalsIgnoreCase(source.getScheme())) {
-                player.setDataSource(currentUri);
+                java.util.HashMap<String, String> headers = new java.util.HashMap<String, String>();
+                headers.put("User-Agent", "Mozilla/5.0 (Linux; Android 4.3) AppleWebKit/537.36 Chrome/120.0 Mobile Safari/537.36");
+                headers.put("Referer", "https://www.youtube.com/");
+                player.setDataSource(this, source, headers);
+            } else if (source.getScheme() == null || "file".equalsIgnoreCase(source.getScheme())) {
+                player.setDataSource("file".equalsIgnoreCase(source.getScheme()) ? source.getPath() : currentUri);
             } else {
                 player.setDataSource(this, source);
             }
@@ -125,6 +133,7 @@ public final class LocalPlaybackService extends Service implements AudioManager.
                     if (mediaPlayer != player) return true;
                     playing = false;
                     prepared = false;
+                    playbackError = "Android audio decoder/network error (" + what + ", " + extra + ").";
                     handler.removeCallbacks(progressUpdate);
                     refreshNotification();
                     publishState();
@@ -134,14 +143,17 @@ public final class LocalPlaybackService extends Service implements AudioManager.
             player.prepareAsync();
             publishState();
         } catch (IOException error) {
+            playbackError = error.getMessage();
             releasePlayer();
             refreshNotification();
             publishState();
         } catch (IllegalArgumentException error) {
+            playbackError = error.getMessage();
             releasePlayer();
             refreshNotification();
             publishState();
         } catch (SecurityException error) {
+            playbackError = error.getMessage();
             releasePlayer();
             refreshNotification();
             publishState();
@@ -219,6 +231,7 @@ public final class LocalPlaybackService extends Service implements AudioManager.
         }
         update.putExtra(EXTRA_POSITION, position);
         update.putExtra(EXTRA_DURATION, duration);
+        update.putExtra(EXTRA_ERROR, playbackError);
         sendBroadcast(update);
     }
 
