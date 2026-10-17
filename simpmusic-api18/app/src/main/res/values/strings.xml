@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SimpMusic Legacy</string>
+    <string name="search_hint">Search songs or artists</string>
+    <string name="empty_library">No music found on this device.</string>
+    <string name="permission_message">Allow music access to browse audio stored on this device.</string>
+    <string name="playback_channel_name">Music playback</string>
+</resources>

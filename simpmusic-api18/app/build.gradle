@@ -1,0 +1,21 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.maxrave.simpmusic.legacy'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.maxrave.simpmusic.legacy'
+        minSdk 18
+        targetSdk 28
+        versionCode 1
+        versionName '0.1.0-api18'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
