@@ -24,5 +24,6 @@ A separate, limited local-music player built for Android 4.3 (API 18) and newer.
 - Package: `com.maxrave.simpmusic.legacy`
 - Minimum SDK: 18; target SDK: 28
 - APK SHA-256: `60556d45b655c59b9d62fc07c3bd04a9d98cf268208bd54913fc5586a1c43dca`
+- [REA reverse-engineering findings and API 18 porting plan](SIMPMUSIC_API18_REA.md)
 
 This reduced edition is provided separately from nmusic Legacy. SimpMusic-derived distribution is under GPL-3.0; see [LICENSE](simpmusic-api18/LICENSE). Device runtime playback has not yet been verified on physical hardware.
