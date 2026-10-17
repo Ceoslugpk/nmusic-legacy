@@ -397,7 +397,8 @@ public final class MainActivity extends Activity {
                     }
                 } else {
                     lastDiagnostic = fullDiagnostic(failure);
-                    message.setText("Download failed (tap for details): " + safeMessage(failure));
+                    message.setText("Download failed: " + safeMessage(failure));
+                    showDiagnostic();
                 }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
