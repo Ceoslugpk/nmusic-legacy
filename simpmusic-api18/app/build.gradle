@@ -10,8 +10,8 @@ android {
         applicationId 'com.maxrave.simpmusic.legacy'
         minSdk 18
         targetSdk 28
-        versionCode 10
-        versionName '0.10.0-api18-collection-stream-dispatch'
+        versionCode 11
+        versionName '0.11.0-api18-ios-stream-fallback'
         multiDexEnabled true
     }
 

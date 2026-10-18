@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.search.SearchInfo;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.StreamInfo;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -46,6 +47,9 @@ final class YoutubeClient {
     static synchronized void initialize() {
         if (initialized) return;
         NewPipe.init(new AndroidDownloader());
+        // Some videos have no audio formats in the anonymous Android player response.
+        // NewPipe can recover additional formats from its iOS player response.
+        YoutubeStreamExtractor.setFetchIosClient(true);
         initialized = true;
     }
 
@@ -221,7 +225,20 @@ final class YoutubeClient {
             initialize();
             StreamInfo info = StreamInfo.getInfo(ServiceList.YouTube, youtubeUrl);
             List<AudioStream> streams = info.getAudioStreams();
-            if (streams == null || streams.isEmpty()) throw new IOException("No playable audio stream was found.");
+            if (streams == null || streams.isEmpty()) {
+                StringBuilder detail = new StringBuilder("No playable audio stream was found.");
+                List<Throwable> errors = info.getErrors();
+                if (errors != null && !errors.isEmpty()) {
+                    detail.append(" Extractor details: ");
+                    for (int i = 0; i < errors.size() && i < 3; i++) {
+                        if (i > 0) detail.append("; ");
+                        Throwable cause = errors.get(i);
+                        detail.append(cause.getMessage() == null
+                                ? cause.getClass().getSimpleName() : cause.getMessage());
+                    }
+                }
+                throw new IOException(detail.toString());
+            }
             // Android 4.3 MediaPlayer supports AAC/M4A; newer Opus/WebM streams do not work there.
             for (AudioStream stream : streams) {
                 if (stream.getFormat() == MediaFormat.M4A) return stream.getContent();
