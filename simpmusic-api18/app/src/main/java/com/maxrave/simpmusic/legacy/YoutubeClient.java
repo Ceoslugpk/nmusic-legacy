@@ -12,7 +12,9 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.search.SearchInfo;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.AudioStream;
@@ -29,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -220,7 +223,7 @@ final class YoutubeClient {
         return error.getMessage() == null ? error.getClass().getSimpleName() : error.getMessage();
     }
 
-    static String resolveAudioUrl(String youtubeUrl) throws Exception {
+    static List<AudioStream> resolveAudioStreams(String youtubeUrl) throws Exception {
         try {
             initialize();
             StreamInfo info = StreamInfo.getInfo(ServiceList.YouTube, youtubeUrl);
@@ -240,29 +243,55 @@ final class YoutubeClient {
                 throw new IOException(detail.toString());
             }
             // Android 4.3 MediaPlayer supports AAC/M4A; newer Opus/WebM streams do not work there.
+            ArrayList<AudioStream> compatibleStreams = new ArrayList<AudioStream>();
             for (AudioStream stream : streams) {
-                if (stream.getFormat() == MediaFormat.M4A) return stream.getContent();
+                if (stream.getFormat() == MediaFormat.M4A) compatibleStreams.add(stream);
             }
-            throw new IOException("This video has no AAC/M4A stream supported by Android 4.3.");
+            if (compatibleStreams.isEmpty()) {
+                throw new IOException("This video has no AAC/M4A stream supported by Android 4.3.");
+            }
+            return compatibleStreams;
         } catch (LinkageError error) {
             throw new IOException("The stream extractor is incompatible with this Android runtime: " + message(error), error);
         }
     }
 
     static void downloadAudio(String youtubeUrl, File destination) throws Exception {
-        String audioUrl = resolveAudioUrl(youtubeUrl);
+        List<AudioStream> streams = resolveAudioStreams(youtubeUrl);
+        IOException rejectedStream = null;
+        for (AudioStream stream : streams) {
+            try {
+                downloadAudioStream(stream.getContent(), destination);
+                return;
+            } catch (IOException error) {
+                if (!isHttp403(error)) throw error;
+                rejectedStream = error;
+            }
+        }
+        if (rejectedStream != null) {
+            throw new IOException("YouTube rejected all " + streams.size()
+                    + " AAC/M4A stream candidates (HTTP 403). Try another result or retry later.",
+                    rejectedStream);
+        }
+        throw new IOException("No AAC/M4A stream could be downloaded.");
+    }
+
+    private static void downloadAudioStream(String audioUrl, File destination) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(audioUrl).openConnection();
         connection.setConnectTimeout(20000);
         connection.setReadTimeout(30000);
         connection.setInstanceFollowRedirects(true);
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 9; Mobile) AppleWebKit/537.36 Chrome/120.0 Mobile Safari/537.36");
+        connection.setRequestProperty("User-Agent", mediaUserAgent(audioUrl));
         connection.setRequestProperty("Referer", "https://www.youtube.com/");
         connection.setRequestProperty("Accept", "*/*");
         connection.setRequestProperty("Accept-Encoding", "identity");
         SSLSocketFactory tls = AndroidDownloader.TLS12;
         if (connection instanceof HttpsURLConnection && tls != null) ((HttpsURLConnection) connection).setSSLSocketFactory(tls);
         int status = connection.getResponseCode();
-        if (status < 200 || status >= 300) throw new IOException("Audio download failed (HTTP " + status + ").");
+        if (status < 200 || status >= 300) {
+            connection.disconnect();
+            throw new IOException("Audio download failed (HTTP " + status + ").");
+        }
         InputStream input = connection.getInputStream();
         FileOutputStream output = new FileOutputStream(destination);
         try {
@@ -273,6 +302,31 @@ final class YoutubeClient {
         } finally {
             try { input.close(); } finally { output.close(); connection.disconnect(); }
         }
+    }
+
+    static String mediaUserAgent(String audioUrl) throws IOException {
+        String query = new URL(audioUrl).getQuery();
+        if (query != null) {
+            String[] parameters = query.split("&");
+            for (String parameter : parameters) {
+                int separator = parameter.indexOf('=');
+                String name = separator < 0 ? parameter : parameter.substring(0, separator);
+                if (!"c".equals(name) || separator < 0) continue;
+                String client = URLDecoder.decode(parameter.substring(separator + 1), "UTF-8");
+                if ("IOS".equalsIgnoreCase(client)) {
+                    return YoutubeParsingHelper.getIosUserAgent(Localization.DEFAULT);
+                }
+                if ("ANDROID".equalsIgnoreCase(client)) {
+                    return YoutubeParsingHelper.getAndroidUserAgent(Localization.DEFAULT);
+                }
+            }
+        }
+        return YoutubeParsingHelper.getAndroidUserAgent(Localization.DEFAULT);
+    }
+
+    private static boolean isHttp403(IOException error) {
+        String message = error.getMessage();
+        return message != null && message.contains("HTTP 403");
     }
 
     private static final class AndroidDownloader extends Downloader {

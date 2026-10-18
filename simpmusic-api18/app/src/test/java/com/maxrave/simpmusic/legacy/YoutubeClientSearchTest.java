@@ -31,6 +31,13 @@ public final class YoutubeClientSearchTest {
         assertEquals("https://www.youtube.com/watch?v=overlay-id", songs.get(0).youtubeUrl);
     }
 
+    @Test public void usesPlayerClientUserAgentForAudioUrls() throws Exception {
+        assertTrue(YoutubeClient.mediaUserAgent("https://audio.example/test?c=ANDROID")
+                .startsWith("com.google.android.youtube/"));
+        assertTrue(YoutubeClient.mediaUserAgent("https://audio.example/test?c=IOS")
+                .startsWith("com.google.ios.youtube/"));
+    }
+
     private static String row(String id, String title, String artist) {
         return "{\"musicResponsiveListItemRenderer\":{"
                 + "\"playlistItemData\":{\"videoId\":\"" + id + "\"},"

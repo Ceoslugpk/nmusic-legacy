@@ -23,8 +23,8 @@ A separate reduced compatibility edition built for Android 4.3 (API 18) and newe
 - [Download the debug APK](simpmusic-api18/SimpMusic-API18-debug.apk)
 - Package: `com.maxrave.simpmusic.legacy`
 - Minimum SDK: 18; target SDK: 28
-- APK version: `0.11.0-api18-ios-stream-fallback` (version code 11)
-- APK SHA-256: `10c4ae74dd18d7ccd96da617c221f0a319270a12ae5f24a17554378a25886805`
+- APK version: `0.12.0-api18-client-matched-audio-fetch` (version code 12)
+- APK SHA-256: `acf4091298dd8c37dfe005eae81575d453960a15d9ae2ca3799d04431077e14a`
 - [REA reverse-engineering findings and API 18 porting plan](SIMPMUSIC_API18_REA.md)
 
-This reduced edition is provided separately from nmusic Legacy. SimpMusic-derived distribution is under GPL-3.0; see [LICENSE](simpmusic-api18/LICENSE). YouTube Music search uses SimpMusic’s WEB_REMIX search endpoint and response shape; fixture tests cover the changed song ID fields. The bundled NewPipe stream extractor's newer Java collection and Objects APIs are backported for Android 4.3, and NanoJSON includes the exact desugared `JsonArray.stream()` bridge the extractor invokes. Stream resolution now also requests iOS player formats as a fallback when the anonymous Android player has none. Playback downloads an AAC/M4A copy to the app cache before using the native player. Live extraction and playback/download still need a physical Android 4.3 device test.
+This reduced edition is provided separately from nmusic Legacy. SimpMusic-derived distribution is under GPL-3.0; see [LICENSE](simpmusic-api18/LICENSE). YouTube Music search uses SimpMusic’s WEB_REMIX search endpoint and response shape; fixture tests cover the changed song ID fields. The bundled NewPipe stream extractor's newer Java collection and Objects APIs are backported for Android 4.3, and NanoJSON includes the exact desugared `JsonArray.stream()` bridge the extractor invokes. Stream resolution requests iOS player formats when Android has none; media requests use the matching player client user agent and retry other AAC/M4A candidates if a stream URL is rejected. Live extraction and playback/download still need a physical Android 4.3 device test.
