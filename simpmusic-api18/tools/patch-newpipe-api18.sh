@@ -30,6 +30,8 @@ nano_root = app / "third_party/nanojson/java"
 patched_sources = [p for p in source_root.rglob("*.java")
                    if "org.schabi.newpipe.extractor.LegacyCollections." in p.read_text()]
 helper = source_root / "org/schabi/newpipe/extractor/LegacyCollections.java"
+remote_decoder = source_root / "org/schabi/newpipe/extractor/services/youtube/YoutubeRemoteDecoder.java"
+player_manager = source_root / "org/schabi/newpipe/extractor/services/youtube/YoutubeJavaScriptPlayerManager.java"
 nano_sources = list(nano_root.rglob("*.java"))
 classpath = [str(extractor_jar), str(android_jar)]
 classpath.extend(str(p) for p in cache.rglob("*.jar"))
@@ -38,6 +40,7 @@ classes.mkdir(parents=True)
 cmd = ["java", "--module", "jdk.compiler/com.sun.tools.javac.Main",
        "-source", "17", "-target", "17", "-sourcepath", "",
        "-classpath", ":".join(classpath), "-d", str(classes), str(helper)]
+cmd.extend([str(remote_decoder), str(player_manager)])
 cmd.extend(str(p) for p in nano_sources)
 cmd.extend(str(p) for p in patched_sources)
 subprocess.run(cmd, cwd=app, check=True)

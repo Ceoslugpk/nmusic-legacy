@@ -10,8 +10,8 @@ android {
         applicationId 'com.maxrave.simpmusic.legacy'
         minSdk 18
         targetSdk 28
-        versionCode 12
-        versionName '0.12.0-api18-client-matched-audio-fetch'
+        versionCode 13
+        versionName '0.13.0-api18-pipepipe-decoder'
         multiDexEnabled true
     }
 
